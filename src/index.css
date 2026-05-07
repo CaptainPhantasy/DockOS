@@ -17,6 +17,36 @@
   --glass-blur-heavy: 60px;
   --accent: #007AFF;
   --accent-glow: rgba(0, 122, 255, 0.3);
+
+  /* Spacing scale (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Typography scale */
+  --text-2xs: 9px;
+  --text-xs: 10px;
+  --text-sm: 11px;
+  --text-base: 12px;
+  --text-md: 13px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+
+  /* Semantic colors */
+  --color-success: #34C759;
+  --color-warning: #FF9500;
+  --color-error: #FF3B30;
+  --color-info: #007AFF;
+  --color-text-primary: rgba(255, 255, 255, 0.9);
+  --color-text-secondary: rgba(255, 255, 255, 0.6);
+  --color-text-tertiary: rgba(255, 255, 255, 0.4);
+  --color-text-muted: rgba(255, 255, 255, 0.25);
+
   --radius: 16px;
   --radius-sm: 10px;
   --radius-xs: 6px;
@@ -383,8 +413,8 @@ body {
 }
 
 .footer-text {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
 }
 
 /* ---------- Screen Container ---------- */
@@ -551,13 +581,14 @@ body {
 }
 
 .screen-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.15);
   cursor: pointer;
   padding: 0;
+  margin: 0 2px;
   transition: all var(--transition-fast);
 }
 
@@ -982,13 +1013,18 @@ body {
 }
 
 .icon-btn {
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(255, 255, 255, 0.02);
   color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
 }
 
 .icon-btn:hover {
@@ -1003,7 +1039,7 @@ body {
 }
 
 .icon-name {
-  font-size: 9px;
+  font-size: var(--text-2xs);
   font-weight: 500;
   font-family: -apple-system, sans-serif;
 }
@@ -1146,14 +1182,17 @@ body {
 }
 
 .settings-section-title {
-  font-size: 11px;
+  font-size: var(--text-sm);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   display: flex;
   align-items: center;
   gap: 6px;
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--accent);
+  margin-bottom: var(--space-2);
 }
 
 /* Provider Grid */
@@ -1343,19 +1382,21 @@ body {
 
 .chat-message.user {
   align-self: flex-end;
-  background: rgba(0, 122, 255, 0.15);
-  border: 1px solid rgba(0, 122, 255, 0.2);
+  background: rgba(0, 122, 255, 0.18);
+  border: 1px solid rgba(0, 122, 255, 0.25);
+  border-bottom-right-radius: 4px;
 }
 
 .chat-message.assistant {
   align-self: flex-start;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 4px;
 }
 
 .chat-message-content {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
   line-height: 1.5;
   flex: 1;
   word-break: break-word;
@@ -1401,6 +1442,13 @@ body {
   justify-content: center;
 }
 
+.chat-input-hint {
+  display: block;
+  font-size: var(--text-2xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding-top: var(--space-1);
+}
 /* ---------- Tool Call Blocks ---------- */
 .tool-call-block {
   background: rgba(255, 255, 255, 0.04);

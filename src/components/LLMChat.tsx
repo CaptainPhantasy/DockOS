@@ -307,7 +307,7 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
                 <motion.button
                   className="modal-close"
                   onClick={onClose}
-                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileHover={{ scale: 1.1, opacity: 0.7 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <X size={18} />
@@ -393,10 +393,14 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
                   disabled={isLLMLoading || !input.trim()}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  title="Send (Enter)"
                 >
                   {isLLMLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                 </motion.button>
               </div>
+              {!isLLMLoading && !input.trim() && (
+                <span className="chat-input-hint">Press Enter to send</span>
+              )}
             </div>
           </motion.div>
         </motion.div>

@@ -97,12 +97,7 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
         animate={{ opacity: 1, scale: 1 }}
         layout
       >
-        <motion.div
-          animate={{ rotate: [0, 90, 180, 270, 360] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-        >
-          <LucideIcons.Plus size={20} strokeWidth={1.5} className="text-white/20" />
-        </motion.div>
+        <LucideIcons.Plus size={20} strokeWidth={1.5} className="text-white/20" />
       </motion.div>
     );
   }

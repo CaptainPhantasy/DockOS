@@ -198,7 +198,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               <motion.button
                 className="modal-close"
                 onClick={onClose}
-                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileHover={{ scale: 1.1, opacity: 0.7 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <X size={18} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Loader2, Terminal, Globe, FileText, Code } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { v4 as uuidv4 } from 'uuid';
 import type { DockButton } from '../types';
@@ -152,7 +153,7 @@ export const ButtonEditor: React.FC<ButtonEditorProps> = ({ isOpen, onClose }) =
                   setButtonEditorOpen(false);
                   onClose();
                 }}
-                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileHover={{ scale: 1.1, opacity: 0.7 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <X size={18} />
@@ -251,18 +252,21 @@ export const ButtonEditor: React.FC<ButtonEditorProps> = ({ isOpen, onClose }) =
               <div className="field-group">
                 <label className="field-label">Icon</label>
                 <div className="icon-grid">
-                  {DEFAULT_ICONS.slice(0, 20).map((iconName) => (
-                    <motion.button
-                      key={iconName}
-                      className={`icon-btn ${icon === iconName ? 'active' : ''}`}
-                      onClick={() => setIcon(iconName)}
-                      whileHover={{ scale: 1.15 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      {/* Icon preview will render by name */}
-                      <span className="icon-name">{iconName}</span>
-                    </motion.button>
-                  ))}
+                  {DEFAULT_ICONS.slice(0, 20).map((iconName) => {
+                    const Icon = (LucideIcons as any)[iconName];
+                    return (
+                      <motion.button
+                        key={iconName}
+                        className={`icon-btn ${icon === iconName ? 'active' : ''}`}
+                        onClick={() => setIcon(iconName)}
+                        whileHover={{ scale: 1.15 }}
+                        whileTap={{ scale: 0.9 }}
+                        title={iconName}
+                      >
+                        {Icon ? <Icon size={16} strokeWidth={1.5} /> : <span className="icon-name">{iconName}</span>}
+                      </motion.button>
+                    );
+                  })}
                 </div>
               </div>
 
