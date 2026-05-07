@@ -90,7 +90,7 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
       <motion.div
         className="dock-btn dock-btn-empty"
         onClick={onEdit}
-        whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
+        whileHover={{ scale: 1.06, backgroundColor: 'rgba(255,255,255,0.08)' }}
         whileTap={{ scale: 0.97 }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         initial={{ opacity: 0, scale: 0.8 }}

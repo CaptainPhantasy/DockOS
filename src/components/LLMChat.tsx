@@ -344,6 +344,9 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
                   transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                 >
                   {renderMessage(msg)}
+                  <span className="chat-timestamp">
+                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                   {msg.role === 'assistant' && msg.content && (
                     <motion.button
                       className="chat-copy-btn"
