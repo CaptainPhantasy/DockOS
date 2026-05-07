@@ -318,10 +318,21 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
             <div className="chat-messages">
               {chatMessages.length === 0 && (
                 <div className="chat-empty">
-                  <Sparkles size={32} className="text-white/20" />
-                  <p className="text-white/40 text-sm text-center">
-                    Ask me to manage your screens and buttons, generate commands, or automate workflows.
-                  </p>
+                  <Sparkles size={28} className="text-white/20" />
+                  <p className="chat-empty-title">What can I help with?</p>
+                  <div className="chat-suggestions">
+                    {['Show my screens', 'Create a build button', 'List all commands'].map((s) => (
+                      <motion.button
+                        key={s}
+                        className="chat-suggestion-chip"
+                        onClick={() => { setInput(s); }}
+                        whileHover={{ scale: 1.03, background: 'rgba(0, 122, 255, 0.15)' }}
+                        whileTap={{ scale: 0.97 }}
+                      >
+                        {s}
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
               )}
               {chatMessages.map((msg) => (
@@ -356,8 +367,23 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
                   animate={{ opacity: 1 }}
                 >
                   <div className="chat-loading">
-                    <Loader2 size={16} className="animate-spin" />
-                    <span>Thinking...</span>
+                    <div className="chat-loading-dots">
+                      <motion.span
+                        className="chat-loading-dot"
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 1.2, repeat: Infinity, delay: 0 }}
+                      />
+                      <motion.span
+                        className="chat-loading-dot"
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 1.2, repeat: Infinity, delay: 0.2 }}
+                      />
+                      <motion.span
+                        className="chat-loading-dot"
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
+                      />
+                    </div>
                   </div>
                 </motion.div>
               )}

@@ -298,6 +298,28 @@ export const ButtonEditor: React.FC<ButtonEditorProps> = ({ isOpen, onClose }) =
               </div>
             </div>
 
+            {/* Live Preview */}
+            {label.trim() && (() => {
+              const PreviewIcon = (LucideIcons as any)[icon] || LucideIcons.Command;
+              return (
+                <div className="button-preview-bar">
+                  <span className="field-label">Preview</span>
+                  <div
+                    className="dock-btn dock-btn-filled button-preview"
+                    style={{
+                      background: `linear-gradient(135deg, ${color}22 0%, ${color}44 100%)`,
+                      borderColor: `${color}66`,
+                    }}
+                  >
+                    <div className="btn-content" style={{ transform: 'none' }}>
+                      <PreviewIcon size={22} strokeWidth={1.5} />
+                      <span className="btn-label">{label}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Footer */}
             <div className="modal-footer">
               {existingButton && (

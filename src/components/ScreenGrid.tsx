@@ -43,7 +43,7 @@ export const ScreenGrid: React.FC<{
         <motion.button
           className="toolbar-btn"
           onClick={onOpenSettings}
-          whileHover={{ scale: 1.1, rotate: 45 }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           title="Settings"
         >
@@ -142,7 +142,7 @@ export const ScreenGrid: React.FC<{
           whileTap={{ scale: 0.9 }}
           disabled={screens.length <= 1}
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={16} />
         </motion.button>
 
         <div className="screen-info">
@@ -175,7 +175,7 @@ export const ScreenGrid: React.FC<{
           whileTap={{ scale: 0.9 }}
           disabled={screens.length <= 1}
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={16} />
         </motion.button>
       </div>
 
