@@ -97,7 +97,12 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
         animate={{ opacity: 1, scale: 1 }}
         layout
       >
-        <LucideIcons.Plus size={20} strokeWidth={1.5} className="text-white/20" />
+        <motion.div
+          animate={{ opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <LucideIcons.Plus size={20} strokeWidth={1.5} className="text-white/20" />
+        </motion.div>
       </motion.div>
     );
   }

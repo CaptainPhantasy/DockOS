@@ -1470,6 +1470,27 @@ body {
   word-break: break-word;
 }
 
+.chat-code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+  font-size: 0.9em;
+  color: #FF9F0A;
+}
+
+.chat-list-item {
+  padding-left: var(--space-3);
+  position: relative;
+}
+
+.chat-list-item::before {
+  content: '•';
+  position: absolute;
+  left: 2px;
+  color: var(--color-text-muted);
+}
+
 .chat-copy-btn {
   background: none;
   border: none;

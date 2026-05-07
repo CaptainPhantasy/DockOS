@@ -256,14 +256,38 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
     }
 
     // Regular text message
+    const renderInlineMarkdown = (text: string) => {
+      // Process bold, code, and inline code
+      const parts = text.split(/(\*\*.*?\*\*|`[^`]+`)/g);
+      return parts.map((part, i) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return <strong key={i}>{part.slice(2, -2)}</strong>;
+        }
+        if (part.startsWith('`') && part.endsWith('`')) {
+          return <code key={i} className="chat-code">{part.slice(1, -1)}</code>;
+        }
+        return part;
+      });
+    };
+
+    const lines = msg.content.split('\n');
     return (
       <div className="chat-message-content">
-        {msg.content.split('\n').map((line, i) => (
-          <span key={i}>
-            {line}
-            {i < msg.content.split('\n').length - 1 && <br />}
-          </span>
-        ))}
+        {lines.map((line, i) => {
+          if (line.startsWith('```')) return null;
+          if (line.startsWith('- ')) {
+            return <div key={i} className="chat-list-item">{renderInlineMarkdown(line.slice(2))}</div>;
+          }
+          if (/^\d+\.\s/.test(line)) {
+            return <div key={i} className="chat-list-item">{renderInlineMarkdown(line.replace(/^\d+\.\s/, ''))}</div>;
+          }
+          return (
+            <span key={i}>
+              {renderInlineMarkdown(line)}
+              {i < lines.length - 1 && <br />}
+            </span>
+          );
+        })}
       </div>
     );
   };
