@@ -105,6 +105,7 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
   return (
     <motion.div
       className="dock-btn dock-btn-filled"
+      title={`${button.label}: ${button.command}`}
       style={{
         background: `linear-gradient(135deg, ${button.color}22 0%, ${button.color}44 100%)`,
         borderColor: `${button.color}66`,
