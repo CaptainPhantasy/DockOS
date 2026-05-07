@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Key, Server, Thermometer, Hash, Eye, EyeOff, Check, AlertCircle, Shield, ShieldOff, ShieldAlert, ShieldCheck, Plug, Trash2, Search, FileJson } from 'lucide-react';
+import { X, Key, Server, Thermometer, Hash, Eye, EyeOff, Check, AlertCircle, Shield, ShieldOff, ShieldAlert, ShieldCheck, Plug, Trash2, Search, FileJson, Cpu, Monitor, Download } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import type { LLMProvider, SecurityGate, CustomTool } from '../types';
 import { PROVIDER_CONFIGS, SECURITY_GATE_INFO } from '../types';
@@ -208,7 +208,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             <div className="modal-body settings-body">
               {/* LLM Provider */}
               <div className="settings-section">
-                <h4 className="settings-section-title">LLM Provider</h4>
+                <h4 className="settings-section-title"><Cpu size={14} /> LLM Provider</h4>
                 <div className="provider-grid">
                   {(Object.entries(PROVIDER_CONFIGS) as [LLMProvider, typeof PROVIDER_CONFIGS[LLMProvider]][]).map(
                     ([key, config]) => (
@@ -297,7 +297,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
 
               {/* Max Tokens */}
               <div className="settings-section">
-                <h4 className="settings-section-title">Max Tokens</h4>
+                <h4 className="settings-section-title"><Hash size={14} /> Max Tokens</h4>
                 <input
                   type="number"
                   className="field-input"
@@ -365,7 +365,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
 
               {/* Screen Management */}
               <div className="settings-section">
-                <h4 className="settings-section-title">Screen Management</h4>
+                <h4 className="settings-section-title"><Monitor size={14} /> Screen Management</h4>
                 <div className="screen-list">
                   {screens.map((screen, index) => (
                     <div key={screen.id} className="screen-list-item">
@@ -485,7 +485,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
 
               {/* Import/Export */}
               <div className="settings-section">
-                <h4 className="settings-section-title">Import / Export</h4>
+                <h4 className="settings-section-title"><Download size={14} /> Import / Export</h4>
                 <div className="import-export-row">
                   <motion.button
                     className="btn-secondary flex-1"
