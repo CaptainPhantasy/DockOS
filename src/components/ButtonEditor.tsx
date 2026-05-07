@@ -42,6 +42,7 @@ export const ButtonEditor: React.FC<ButtonEditorProps> = ({ isOpen, onClose }) =
   const [color, setColor] = useState('#007AFF');
   const [llmPrompt, setLlmPrompt] = useState('');
   const [error, setError] = useState('');
+  const [iconSearch, setIconSearch] = useState('');
 
   useEffect(() => {
     if (existingButton) {
@@ -251,14 +252,24 @@ export const ButtonEditor: React.FC<ButtonEditorProps> = ({ isOpen, onClose }) =
               {/* Icon */}
               <div className="field-group">
                 <label className="field-label">Icon</label>
+                <input
+                  className="field-input icon-search"
+                  type="text"
+                  placeholder="Search icons..."
+                  value={iconSearch}
+                  onChange={(e) => setIconSearch(e.target.value)}
+                />
                 <div className="icon-grid">
-                  {DEFAULT_ICONS.slice(0, 20).map((iconName) => {
+                  {DEFAULT_ICONS
+                    .filter((name) => !iconSearch || name.toLowerCase().includes(iconSearch.toLowerCase()))
+                    .slice(0, iconSearch ? 36 : 20)
+                    .map((iconName) => {
                     const Icon = (LucideIcons as any)[iconName];
                     return (
                       <motion.button
                         key={iconName}
                         className={`icon-btn ${icon === iconName ? 'active' : ''}`}
-                        onClick={() => setIcon(iconName)}
+                        onClick={() => { setIcon(iconName); setIconSearch(''); }}
                         whileHover={{ scale: 1.15 }}
                         whileTap={{ scale: 0.9 }}
                         title={iconName}
