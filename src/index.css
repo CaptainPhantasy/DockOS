@@ -372,24 +372,25 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .panel-title-area {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .panel-title {
-  font-size: 14px;
+  font-size: var(--text-lg);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .panel-actions {
   display: flex;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .panel-action-btn {
@@ -615,13 +616,13 @@ body {
 .button-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 4px 0;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
 }
 
 .grid-row {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   justify-content: center;
 }
 
