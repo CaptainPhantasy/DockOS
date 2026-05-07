@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import type { AppState, Screen, LLMConfig, LLMProvider } from '../types';
+import type { AppState, Screen, LLMConfig, LLMProvider, SecurityGate, CustomTool } from '../types';
 import { PROVIDER_CONFIGS } from '../types';
 
 const createEmptyScreen = (name?: string, index?: number): Screen => ({
@@ -35,6 +35,9 @@ export const useStore = create<AppState>()(
         editingButton: null,
 
         llmConfig: defaultLLMConfig,
+        securityGate: 'auto_mode' as SecurityGate,
+        customTools: [] as CustomTool[],
+
 
         chatMessages: [],
         isLLMLoading: false,
@@ -114,6 +117,32 @@ export const useStore = create<AppState>()(
             llmConfig: { ...state.llmConfig, ...config },
           })),
 
+        updateSecurityGate: (gate) => set({ securityGate: gate }),
+
+        addCustomTool: (tool) =>
+          set((state) => ({
+            customTools: [...state.customTools, { ...tool, id: uuidv4(), createdAt: Date.now() }],
+          })),
+
+        removeCustomTool: (id) =>
+          set((state) => ({
+            customTools: state.customTools.filter((t) => t.id !== id),
+          })),
+
+        toggleCustomTool: (id) =>
+          set((state) => ({
+            customTools: state.customTools.map((t) =>
+              t.id === id ? { ...t, enabled: !t.enabled } : t
+            ),
+          })),
+
+        updateCustomTool: (id, updates) =>
+          set((state) => ({
+            customTools: state.customTools.map((t) =>
+              t.id === id ? { ...t, ...updates } : t
+            ),
+          })),
+
         addChatMessage: (message) =>
           set((state) => ({
             chatMessages: [
@@ -133,7 +162,9 @@ export const useStore = create<AppState>()(
         screens: state.screens,
         currentScreenIndex: state.currentScreenIndex,
         llmConfig: state.llmConfig,
+        securityGate: state.securityGate,
         chatMessages: state.chatMessages,
+        customTools: state.customTools,
       }),
     }
   )

@@ -1252,6 +1252,65 @@ body {
   color: #FF3B30;
 }
 
+/* Gate Options (Security Settings) */
+.gate-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gate-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.gate-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.gate-option.active {
+  background: rgba(0, 122, 255, 0.12);
+  border-color: rgba(0, 122, 255, 0.3);
+}
+
+.gate-option-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gate-option-icon {
+  display: flex;
+  align-items: center;
+}
+
+.gate-option-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gate-option.active .gate-option-label {
+  color: white;
+}
+
+.gate-option-desc {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.4;
+  padding-left: 20px;
+}
+
+
 /* ---------- Chat ---------- */
 .chat-messages {
   flex: 1;
@@ -1341,6 +1400,171 @@ body {
   min-width: 36px;
   justify-content: center;
 }
+
+/* ---------- Tool Call Blocks ---------- */
+.tool-call-block {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 4px 0;
+  font-size: 11px;
+}
+
+.tool-call-block.blocked {
+  opacity: 0.5;
+  border-color: rgba(142, 142, 147, 0.3);
+}
+
+.tool-call-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  transition: background var(--transition-fast);
+}
+
+.tool-call-header:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tool-call-toggle {
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+}
+
+.security-badge {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.tool-call-name {
+  font-weight: 600;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  flex: 1;
+}
+
+.tool-call-status {
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.tool-call-status.success { color: #34C759; background: rgba(52, 199, 89, 0.12); }
+.tool-call-status.error { color: #FF3B30; background: rgba(255, 59, 48, 0.12); }
+.tool-call-status.blocked { color: #8E8E93; background: rgba(142, 142, 147, 0.12); }
+.tool-call-status.pending { color: #FF9500; background: rgba(255, 149, 0, 0.12); }
+
+.tool-call-body {
+  padding: 6px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tool-call-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.tool-call-args pre,
+.tool-call-result pre {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 6px 8px;
+  border-radius: 6px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0 0 8px 0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.tool-call-result.error pre {
+  border-color: rgba(255, 59, 48, 0.2);
+}
+
+.tool-call-result-compact {
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Tool Approval Prompt ---------- */
+.tool-approval-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-top: 1px solid rgba(255, 149, 0, 0.15);
+  background: rgba(255, 149, 0, 0.06);
+  gap: 8px;
+}
+
+.tool-approval-prompt span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.tool-approval-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.tool-approve-btn {
+  font-size: 11px !important;
+  padding: 4px 12px !important;
+}
+
+.tool-deny-btn {
+  font-size: 11px !important;
+  padding: 4px 12px !important;
+}
+
+/* Chat gate badge in header */
+.chat-gate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+/* Chat message type variants */
+.chat-message.tool-message,
+.chat-message.tool-result-message {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  max-width: 95%;
+}
+
+.result-only {
+  background: transparent;
+  border: none;
+}
+
 
 /* ---------- Scrollbar ---------- */
 ::-webkit-scrollbar {
@@ -1531,4 +1755,99 @@ body {
   max-width: 100%;
   max-height: 100%;
   border-radius: 0;
+}
+
+
+/* ---------- MCP Tool Manager ---------- */
+.mcp-tool-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.mcp-empty {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  padding: 8px;
+}
+
+.mcp-tool-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.mcp-tool-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mcp-tool-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mcp-tool-url {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.mcp-tool-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.mcp-import-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mcp-json-input {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace !important;
+  font-size: 11px !important;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.mcp-actions-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.mcp-actions-row .btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 6px 12px;
+}
+
+.mcp-test-result {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  word-break: break-all;
+  line-height: 1.4;
 }

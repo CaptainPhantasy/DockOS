@@ -31,6 +31,47 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: number;
+  toolCalls?: ToolCall[];
+  toolResults?: ToolResult[];
+  approvalRequest?: ApprovalRequest;
+}
+
+export type ToolCategory = 'read' | 'write' | 'destructive';
+
+export interface ToolCall {
+  id: string;
+  name: string;
+  input: Record<string, unknown>;
+}
+
+export interface ToolResult {
+  tool_use_id: string;
+  content: string;
+  is_error?: boolean;
+}
+
+export type SecurityGate = 'plan_only' | 'ask_each' | 'auto_mode' | 'yolo';
+
+export interface ApprovalRequest {
+  toolCall: ToolCall;
+  gate: SecurityGate;
+  category: ToolCategory;
+}
+
+export interface CustomTool {
+  id: string;
+  name: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+  category: ToolCategory;
+  /** HTTP endpoint the tool calls */
+  endpointUrl: string;
+  /** HTTP method (POST by default) */
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  /** Extra headers (e.g. auth) */
+  headers: Record<string, string>;
+  enabled: boolean;
+  createdAt: number;
 }
 
 export interface AppState {
@@ -47,6 +88,11 @@ export interface AppState {
 
   // LLM Config
   llmConfig: LLMConfig;
+  securityGate: SecurityGate;
+
+  // Custom MCP Tools
+  customTools: CustomTool[];
+
 
   // Chat history
   chatMessages: ChatMessage[];
@@ -70,6 +116,13 @@ export interface AppState {
   updateButton: (screenIndex: number, row: number, col: number, updates: Partial<DockButton>) => void;
 
   updateLLMConfig: (config: Partial<LLMConfig>) => void;
+  updateSecurityGate: (gate: SecurityGate) => void;
+
+  addCustomTool: (tool: Omit<CustomTool, 'id' | 'createdAt'>) => void;
+  removeCustomTool: (id: string) => void;
+  toggleCustomTool: (id: string) => void;
+  updateCustomTool: (id: string, updates: Partial<CustomTool>) => void;
+
 
   addChatMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void;
   clearChatMessages: () => void;
@@ -107,5 +160,28 @@ export const PROVIDER_CONFIGS: Record<LLMProvider, { name: string; defaultModel:
     name: 'OpenCode GO',
     defaultModel: 'default',
     defaultBaseUrl: 'http://localhost:8080',
+  },
+};
+
+export const SECURITY_GATE_INFO: Record<SecurityGate, { label: string; description: string; color: string }> = {
+  plan_only: {
+    label: 'Plan Only',
+    description: 'AI can only read state and suggest actions. No mutations allowed.',
+    color: '#8E8E93',
+  },
+  ask_each: {
+    label: 'Ask Each Time',
+    description: 'Every tool call requires human approval before execution.',
+    color: '#FF9500',
+  },
+  auto_mode: {
+    label: 'Auto Mode',
+    description: 'Reads auto-execute. Writes and destructive ops require approval.',
+    color: '#007AFF',
+  },
+  yolo: {
+    label: 'YOLO',
+    description: 'All operations execute automatically. Full autonomy.',
+    color: '#34C759',
   },
 };

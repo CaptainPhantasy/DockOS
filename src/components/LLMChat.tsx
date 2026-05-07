@@ -1,27 +1,118 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Loader2, Trash2, Sparkles, Copy, Check } from 'lucide-react';
+import { X, Send, Loader2, Trash2, Sparkles, Copy, Check, ChevronDown, ChevronRight, Shield, ShieldAlert, ShieldCheck, ShieldOff } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { callLLM, validateConfig } from '../services/llm';
+import { callLLMWithTools, validateConfig } from '../services/llm';
+import { categorizeTool, isBlocked } from '../services/tools';
+import type { ToolCall, ToolResult, SecurityGate, ChatMessage } from '../types';
+import { SECURITY_GATE_INFO } from '../types';
+import { buildSystemPrompt } from '../services/systemPrompt';
 
 interface LLMChatProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const GateIcon: React.FC<{ gate: SecurityGate; size?: number }> = ({ gate, size = 12 }) => {
+  switch (gate) {
+    case 'plan_only': return <ShieldOff size={size} />;
+    case 'ask_each': return <ShieldAlert size={size} />;
+    case 'auto_mode': return <Shield size={size} />;
+    case 'yolo': return <ShieldCheck size={size} />;
+  }
+};
+
+const ToolCallBlock: React.FC<{
+  toolCall: ToolCall;
+  result?: ToolResult;
+  gate: SecurityGate;
+  onApprove?: () => void;
+  onDeny?: () => void;
+  waitingForApproval?: boolean;
+}> = ({ toolCall, result, gate, onApprove, onDeny, waitingForApproval }) => {
+  const [expanded, setExpanded] = useState(false);
+  const category = categorizeTool(toolCall.name);
+  const blocked = isBlocked(toolCall, gate);
+
+  const categoryColors: Record<string, string> = {
+    read: '#007AFF',
+    write: '#FF9500',
+    destructive: '#FF3B30',
+  };
+
+  return (
+    <div className={`tool-call-block ${blocked ? 'blocked' : ''} ${category}`}>
+      <div className="tool-call-header" onClick={() => setExpanded(!expanded)}>
+        <span className="tool-call-toggle">{expanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}</span>
+        <span className="security-badge" style={{ background: categoryColors[category] || '#8E8E93' }}>
+          {category}
+        </span>
+        <span className="tool-call-name">{toolCall.name.replace(/_/g, ' ')}</span>
+        {blocked && <span className="tool-call-status blocked">BLOCKED</span>}
+        {waitingForApproval && <span className="tool-call-status pending">PENDING</span>}
+        {result && !result.is_error && <span className="tool-call-status success">DONE</span>}
+        {result?.is_error && <span className="tool-call-status error">ERROR</span>}
+      </div>
+
+      {expanded && (
+        <div className="tool-call-body">
+          <div className="tool-call-args">
+            <span className="tool-call-label">Input:</span>
+            <pre>{JSON.stringify(toolCall.input, null, 2)}</pre>
+          </div>
+          {result && (
+            <div className={`tool-call-result ${result.is_error ? 'error' : ''}`}>
+              <span className="tool-call-label">Output:</span>
+              <pre>{result.content}</pre>
+            </div>
+          )}
+        </div>
+      )}
+
+      {waitingForApproval && onApprove && onDeny && (
+        <div className="tool-approval-prompt">
+          <span>Allow this action?</span>
+          <div className="tool-approval-buttons">
+            <motion.button
+              className="btn-primary tool-approve-btn"
+              onClick={onApprove}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Approve
+            </motion.button>
+            <motion.button
+              className="btn-danger tool-deny-btn"
+              onClick={onDeny}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Deny
+            </motion.button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
   const chatMessages = useStore((s) => s.chatMessages);
   const addChatMessage = useStore((s) => s.addChatMessage);
   const clearChatMessages = useStore((s) => s.clearChatMessages);
   const llmConfig = useStore((s) => s.llmConfig);
+  const securityGate = useStore((s) => s.securityGate);
   const isLLMLoading = useStore((s) => s.isLLMLoading);
   const setLLMLoading = useStore((s) => s.setLLMLoading);
 
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  // Pending approvals: tool_use_id -> { resolve, toolCall }
+  const [pendingApprovals, setPendingApprovals] = useState<Map<string, { resolve: (v: boolean) => void; toolCall: ToolCall }>>(new Map());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const approvalResolverRef = useRef<Map<string, (v: boolean) => void>>(new Map());
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -32,6 +123,19 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
+
+  const handleApproval = useCallback((toolUseId: string, approved: boolean) => {
+    const resolver = approvalResolverRef.current.get(toolUseId);
+    if (resolver) {
+      resolver(approved);
+      approvalResolverRef.current.delete(toolUseId);
+    }
+    setPendingApprovals((prev) => {
+      const next = new Map(prev);
+      next.delete(toolUseId);
+      return next;
+    });
+  }, []);
 
   const handleSend = useCallback(async () => {
     if (!input.trim() || isLLMLoading) return;
@@ -48,20 +152,55 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
     setLLMLoading(true);
 
     try {
-      const systemPrompt = `You are an expert macOS automation assistant embedded in a Stream Dock application. Help the user generate shell commands, AppleScripts, terminal scripts, and automation workflows. Be concise and provide directly executable commands. When suggesting commands, put them in a clear format.`;
+      const { customTools } = useStore.getState();
+      const systemPrompt = buildSystemPrompt(customTools.map((t) => t.name));
 
       const recentMessages = chatMessages.slice(-10).map((m) => ({
-        role: m.role,
+        role: m.role as 'user' | 'assistant' | 'system',
         content: m.content,
       }));
 
-      const response = await callLLM(
+      const result = await callLLMWithTools(
         [...recentMessages, { role: 'user', content: userMessage }],
         llmConfig,
-        systemPrompt
+        securityGate,
+        systemPrompt,
+        // onToolCall — add intermediate messages to chat
+        (tc, _category) => {
+          addChatMessage({
+            role: 'assistant',
+            content: '',
+            toolCalls: [tc],
+          });
+        },
+        // onToolResult — add result to chat
+        (tr) => {
+          addChatMessage({
+            role: 'assistant',
+            content: '',
+            toolResults: [tr],
+          });
+        },
+        // onApprovalNeeded — show approval UI and wait
+        async (tc) => {
+          return new Promise<boolean>((resolve) => {
+            approvalResolverRef.current.set(tc.id, resolve);
+            setPendingApprovals((prev) => {
+              const next = new Map(prev);
+              next.set(tc.id, { resolve, toolCall: tc });
+              return next;
+            });
+          });
+        },
       );
 
-      addChatMessage({ role: 'assistant', content: response });
+      // Add the final text response
+      if (result.text) {
+        addChatMessage({ role: 'assistant', content: result.text });
+      } else if (result.allToolCalls.length > 0 && !result.text) {
+        // If the LLM only made tool calls without text, add a summary
+        addChatMessage({ role: 'assistant', content: `Completed ${result.allToolCalls.length} action(s).` });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to get response');
       addChatMessage({
@@ -71,7 +210,7 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
     } finally {
       setLLMLoading(false);
     }
-  }, [input, isLLMLoading, llmConfig, chatMessages, addChatMessage, setLLMLoading]);
+  }, [input, isLLMLoading, llmConfig, chatMessages, addChatMessage, setLLMLoading, securityGate]);
 
   const handleCopy = useCallback((text: string, id: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -79,6 +218,55 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
       setTimeout(() => setCopiedId(null), 1500);
     });
   }, []);
+
+  const gateInfo = SECURITY_GATE_INFO[securityGate];
+
+  const renderMessage = (msg: ChatMessage) => {
+    // Tool call message (no text, just tool calls)
+    if (msg.toolCalls && msg.toolCalls.length > 0 && !msg.content) {
+      return msg.toolCalls.map((tc) => (
+        <ToolCallBlock
+          key={tc.id}
+          toolCall={tc}
+          gate={securityGate}
+          waitingForApproval={pendingApprovals.has(tc.id)}
+          onApprove={() => handleApproval(tc.id, true)}
+          onDeny={() => handleApproval(tc.id, false)}
+        />
+      ));
+    }
+
+    // Tool result message
+    if (msg.toolResults && msg.toolResults.length > 0 && !msg.content) {
+      return msg.toolResults.map((tr) => {
+        // Find the corresponding tool call from previous messages
+        const tcId = tr.tool_use_id;
+        return (
+          <div key={tcId} className="tool-call-block result-only">
+            <div className="tool-call-result-compact">
+              {tr.is_error ? (
+                <span className="tool-call-status error">Tool error</span>
+              ) : (
+                <span className="tool-call-status success">Tool completed</span>
+              )}
+            </div>
+          </div>
+        );
+      });
+    }
+
+    // Regular text message
+    return (
+      <div className="chat-message-content">
+        {msg.content.split('\n').map((line, i) => (
+          <span key={i}>
+            {line}
+            {i < msg.content.split('\n').length - 1 && <br />}
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <AnimatePresence>
@@ -101,6 +289,10 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
             <div className="modal-header">
               <h3 className="modal-title">
                 <Sparkles size={16} /> AI Assistant
+                <span className="chat-gate-badge" style={{ color: gateInfo.color }}>
+                  <GateIcon gate={securityGate} size={11} />
+                  {gateInfo.label}
+                </span>
               </h3>
               <div className="header-actions">
                 <motion.button
@@ -128,27 +320,20 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
                 <div className="chat-empty">
                   <Sparkles size={32} className="text-white/20" />
                   <p className="text-white/40 text-sm text-center">
-                    Ask me to generate commands, scripts, or automation workflows for your Stream Dock.
+                    Ask me to manage your screens and buttons, generate commands, or automate workflows.
                   </p>
                 </div>
               )}
               {chatMessages.map((msg) => (
                 <motion.div
                   key={msg.id}
-                  className={`chat-message ${msg.role}`}
+                  className={`chat-message ${msg.role} ${msg.toolCalls ? 'tool-message' : ''} ${msg.toolResults ? 'tool-result-message' : ''}`}
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                 >
-                  <div className="chat-message-content">
-                    {msg.content.split('\n').map((line, i) => (
-                      <span key={i}>
-                        {line}
-                        {i < msg.content.split('\n').length - 1 && <br />}
-                      </span>
-                    ))}
-                  </div>
-                  {msg.role === 'assistant' && (
+                  {renderMessage(msg)}
+                  {msg.role === 'assistant' && msg.content && (
                     <motion.button
                       className="chat-copy-btn"
                       onClick={() => handleCopy(msg.content, msg.id)}
@@ -196,7 +381,7 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
                   className="field-input flex-1"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask me to generate a command..."
+                  placeholder="Ask me to set up a button..."
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleSend();
                   }}
