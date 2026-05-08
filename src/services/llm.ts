@@ -316,7 +316,7 @@ export async function callLLMWithTools(
         // Route to custom tool HTTP execution or built-in handler
         const output = isCustomTool(tc.name)
           ? await executeCustomTool(tc.name, tc.input)
-          : executeTool(tc.name, tc.input);
+          : await executeTool(tc.name, tc.input);
         const tr: ToolResult = { tool_use_id: tc.id, content: output };
         allToolResults.push(tr);
         toolResultMessages.push({ role: 'tool', tool_use_id: tc.id, content: output });

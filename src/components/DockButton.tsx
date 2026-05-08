@@ -16,6 +16,19 @@ interface DockButtonProps {
 }
 
 const IconComponent: React.FC<{ name: string; size?: number }> = ({ name, size = 22 }) => {
+  // External image URL — render directly
+  if (name.startsWith('http://') || name.startsWith('https://')) {
+    return (
+      <img
+        src={name}
+        alt=""
+        style={{ width: size, height: size, objectFit: 'contain' }}
+        draggable={false}
+      />
+    );
+  }
+
+  // Lucide icon
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const icons = LucideIcons as any;
   const Icon = icons[name];

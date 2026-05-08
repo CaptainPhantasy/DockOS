@@ -197,11 +197,22 @@ export const TOOL_SCHEMAS = {
       required: ['json', 'endpointUrl'],
     },
   },
+  search_brand_logo: {
+    name: 'search_brand_logo',
+    description: 'Search for a brand/company logo by name and return a direct image URL. Use the returned URL as the icon value in update_button. Powered by Clearbit (no API key required).',
+    input_schema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Brand or company name to search for (e.g. "Netflix", "GitHub", "Figma")' },
+      },
+      required: ['query'],
+    },
+  },
 } as const;
 
 // ---------- Tool Categorization ----------
 
-const READ_TOOLS = new Set(['list_screens', 'get_screen', 'get_button', 'list_commands', 'get_state', 'list_custom_tools']);
+const READ_TOOLS = new Set(['list_screens', 'get_screen', 'get_button', 'list_commands', 'get_state', 'list_custom_tools', 'search_brand_logo']);
 const DESTRUCTIVE_TOOLS = new Set(['delete_button', 'delete_screen']);
 
 export function categorizeTool(name: string): ToolCategory {
@@ -443,7 +454,39 @@ function executeImportMcpJson(args: Record<string, unknown>): string {
   return JSON.stringify({ success: true, imported: parsed.map((t) => t.name), endpointUrl });
 }
 
-const HANDLERS: Record<string, (args: Record<string, unknown>) => string> = {
+// ---------- Logo Search ----------
+
+async function executeSearchBrandLogo(args: Record<string, unknown>): Promise<string> {
+  const query = String(args.query || '').trim();
+  if (!query) return JSON.stringify({ error: 'query is required' });
+
+  try {
+    const res = await fetch(
+      `https://autocomplete.clearbit.com/v1/companies/suggest?query=${encodeURIComponent(query)}`
+    );
+    if (!res.ok) return JSON.stringify({ error: `Clearbit API returned ${res.status}` });
+
+    const suggestions = await res.json();
+    if (!Array.isArray(suggestions) || suggestions.length === 0) {
+      return JSON.stringify({ error: `No brand found matching '${query}'` });
+    }
+
+    const best = suggestions[0];
+    return JSON.stringify({
+      success: true,
+      brand: best.name,
+      domain: best.domain,
+      iconUrl: best.logo,
+      tip: 'Use the iconUrl value as the icon parameter in update_button'
+    }, null, 2);
+  } catch (err) {
+    return JSON.stringify({ error: `Logo search failed: ${err instanceof Error ? err.message : 'Unknown error'}` });
+  }
+}
+
+type ToolHandler = (args: Record<string, unknown>) => string | Promise<string>;
+
+const HANDLERS: Record<string, ToolHandler> = {
   list_screens: executeListScreens,
   get_screen: executeGetScreen,
   get_button: executeGetButton,
@@ -459,9 +502,10 @@ const HANDLERS: Record<string, (args: Record<string, unknown>) => string> = {
   add_custom_tool: executeAddCustomTool,
   remove_custom_tool: executeRemoveCustomTool,
   import_mcp_json: executeImportMcpJson,
+  search_brand_logo: executeSearchBrandLogo,
 };
 
-export function executeTool(name: string, args: Record<string, unknown>): string {
+export async function executeTool(name: string, args: Record<string, unknown>): Promise<string> {
   const handler = HANDLERS[name];
   if (!handler) return JSON.stringify({ error: `Unknown tool: ${name}` });
   return handler(args);
