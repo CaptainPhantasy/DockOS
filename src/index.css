@@ -1961,6 +1961,64 @@ body {
   }
 }
 
+/* Narrow viewports (e.g. StreamDock compact mode) */
+@media (max-width: 420px) {
+  :root {
+    --btn-size: 72px;
+    --text-base: 11px;
+  }
+
+  .grid-row {
+    gap: 4px;
+  }
+
+  .toolbar {
+    padding: 4px 8px;
+  }
+
+  .screen-nav {
+    padding: 4px 10px;
+  }
+
+  .settings-body {
+    padding: 10px 12px;
+  }
+
+  .modal-header {
+    padding: 10px 14px;
+  }
+
+  .modal-footer {
+    padding: 8px 14px;
+  }
+
+  .chat-messages {
+    padding: 8px;
+  }
+
+  .chat-input-row {
+    padding: 8px;
+  }
+}
+
+/* Very tall narrow (phone portrait in dock) */
+@media (max-width: 350px) {
+  :root {
+    --btn-size: 64px;
+  }
+
+  .btn-label {
+    font-size: 8px;
+  }
+}
+
+/* Wide viewport — larger buttons */
+@media (min-width: 800px) {
+  :root {
+    --btn-size: 110px;
+  }
+}
+
 /* ================================================
    MENU BAR MODE
    When running inside the native WKWebView wrapper
