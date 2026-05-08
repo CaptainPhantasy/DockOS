@@ -2096,8 +2096,7 @@ body {
 /* Body: the screen grid area fills remaining space */
 .menubar-app-body {
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   overscroll-behavior: contain;
 }
 
@@ -2111,13 +2110,13 @@ body {
 
 /* ---- Menu bar mode: tighter controls for compact viewport ---- */
 .menubar-mode .screen-container {
-  padding: 6px 6px;
-  gap: 4px;
+  padding: 4px 6px;
+  gap: 2px;
 }
 
 .menubar-mode .toolbar {
   gap: 2px;
-  padding-bottom: var(--space-2);
+  padding-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -2127,19 +2126,20 @@ body {
 }
 
 .menubar-mode .button-grid {
-  gap: 5px;
+  gap: 3px;
   padding: 2px 0;
+  flex: 1;
+  justify-content: center;
 }
 
 .menubar-mode .grid-row {
-  gap: 5px;
+  gap: 3px;
 }
-
 .menubar-mode .dock-btn {
-  --btn-size: 90px;
+  --btn-size: 76px;
   width: var(--btn-size);
   height: var(--btn-size);
-  border-radius: 16px;
+  border-radius: 14px;
 }
 
 /* Make modals fit the compact viewport */
