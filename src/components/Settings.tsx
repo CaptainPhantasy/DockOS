@@ -33,6 +33,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
   const [mcpEndpointUrl, setMcpEndpointUrl] = useState('');
   const [mcpDetecting, setMcpDetecting] = useState(false);
   const [mcpTestResult, setMcpTestResult] = useState<string>('');
+  const [settingsSearch, setSettingsSearch] = useState('');
 
   useEffect(() => {
     setScreenNames(screens.map((s) => s.name));
@@ -206,8 +207,27 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="modal-body settings-body">
+              {/* Settings Search */}
+              <div className="settings-search-bar">
+                <Search size={14} className="settings-search-icon" />
+                <input
+                  type="text"
+                  className="settings-search-input"
+                  placeholder="Search settings..."
+                  value={settingsSearch}
+                  onChange={(e) => setSettingsSearch(e.target.value)}
+                />
+              </div>
+              <style>{`
+                ${settingsSearch ? `
+                  .settings-section:not([data-section*="${settingsSearch.toLowerCase()}"]) {
+                    display: none;
+                  }
+                ` : ''}
+              `}</style>
+
               {/* LLM Provider */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="llm provider api openai anthropic google ollama">
                 <h4 className="settings-section-title"><Cpu size={14} /> LLM Provider</h4>
                 <div className="provider-grid">
                   {(Object.entries(PROVIDER_CONFIGS) as [LLMProvider, typeof PROVIDER_CONFIGS[LLMProvider]][]).map(
@@ -228,7 +248,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* API Key */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="api key authentication">
                 <h4 className="settings-section-title">
                   <Key size={14} /> API Key
                 </h4>
@@ -252,7 +272,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Base URL */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="base url endpoint server">
                 <h4 className="settings-section-title">
                   <Server size={14} /> Base URL
                 </h4>
@@ -266,7 +286,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Model */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="model gpt claude gemini">
                 <h4 className="settings-section-title">
                   <Hash size={14} /> Model
                 </h4>
@@ -280,7 +300,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Temperature */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="temperature creativity sampling">
                 <h4 className="settings-section-title">
                   <Thermometer size={14} /> Temperature: {llmConfig.temperature}
                 </h4>
@@ -296,7 +316,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Max Tokens */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="max tokens length response">
                 <h4 className="settings-section-title"><Hash size={14} /> Max Tokens</h4>
                 <input
                   type="number"
@@ -309,7 +329,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Test Connection */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="test connection verify">
                 <motion.button
                   className="btn-secondary w-full"
                   onClick={handleTestConnection}
@@ -331,7 +351,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* AI Security */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="ai security gate plan auto ask yolo">
                 <h4 className="settings-section-title">
                   <Shield size={14} /> AI Security
                 </h4>
@@ -364,7 +384,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Screen Management */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="screen management pages">
                 <h4 className="settings-section-title"><Monitor size={14} /> Screen Management</h4>
                 <div className="screen-list">
                   {screens.map((screen, index) => (
@@ -405,7 +425,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* MCP Tool Manager */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="mcp tools custom plugin">
                 <h4 className="settings-section-title">
                   <Plug size={14} /> MCP Tools
                 </h4>
@@ -484,7 +504,7 @@ export const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Import/Export */}
-              <div className="settings-section">
+              <div className="settings-section" data-section="import export backup restore">
                 <h4 className="settings-section-title"><Download size={14} /> Import / Export</h4>
                 <div className="import-export-row">
                   <motion.button
