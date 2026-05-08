@@ -3,6 +3,7 @@ import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useStore } from '../store/useStore';
 import type { DockButton as DockButtonType } from '../types';
 import * as LucideIcons from 'lucide-react';
+import { playClick, playSuccess } from '../services/audio';
 
 interface DockButtonProps {
   button: DockButtonType | null;
@@ -68,10 +69,12 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
 
   const handleExecute = useCallback(() => {
     if (!button) return;
+    playClick();
     updateButton(screenIndex, row, col, { lastRun: Date.now() });
 
     // Copy command to clipboard
     navigator.clipboard.writeText(button.command).then(() => {
+      playSuccess();
       setShowCopied(true);
       setTimeout(() => setShowCopied(false), 1500);
     });

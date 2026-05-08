@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { DockButtonComponent } from './DockButton';
+import { playTick } from '../services/audio';
 
 export const ScreenGrid: React.FC<{
   onOpenSettings: () => void;
@@ -204,7 +205,7 @@ export const ScreenGrid: React.FC<{
       <div className="screen-nav">
         <motion.button
           className="nav-btn"
-          onClick={prevScreen}
+          onClick={() => { playTick(); prevScreen(); }}
           whileHover={{ scale: 1.15, x: -2 }}
           whileTap={{ scale: 0.9 }}
           disabled={screens.length <= 1}
@@ -237,7 +238,7 @@ export const ScreenGrid: React.FC<{
 
         <motion.button
           className="nav-btn"
-          onClick={nextScreen}
+          onClick={() => { playTick(); nextScreen(); }}
           whileHover={{ scale: 1.15, x: 2 }}
           whileTap={{ scale: 0.9 }}
           disabled={screens.length <= 1}
