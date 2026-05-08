@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronLeft,
@@ -28,8 +28,75 @@ export const ScreenGrid: React.FC<{
   const llmConfig = useStore((s) => s.llmConfig);
 
   const [isScreenMenuOpen, setIsScreenMenuOpen] = useState(false);
+  const [focusedCell, setFocusedCell] = useState<{ row: number; col: number } | null>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const currentScreen = screens[currentScreenIndex];
+
+  // Keyboard navigation for button grid
+  const handleGridKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const ROWS = 5;
+      const COLS = 3;
+
+      if (e.key === 'Escape') {
+        setFocusedCell(null);
+        (document.activeElement as HTMLElement)?.blur();
+        return;
+      }
+
+      let row = focusedCell?.row ?? -1;
+      let col = focusedCell?.col ?? -1;
+
+      switch (e.key) {
+        case 'ArrowRight':
+          e.preventDefault();
+          col = Math.min(col + 1, COLS - 1);
+          if (row === -1) row = 0;
+          if (focusedCell && col === focusedCell.col && focusedCell.col === COLS - 1) break;
+          setFocusedCell({ row, col });
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          col = Math.max(col - 1, 0);
+          if (row === -1) row = 0;
+          if (focusedCell && col === focusedCell.col && focusedCell.col === 0) break;
+          setFocusedCell({ row, col });
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          row = Math.min(row + 1, ROWS - 1);
+          if (col === -1) col = 0;
+          if (focusedCell && row === focusedCell.row && focusedCell.row === ROWS - 1) break;
+          setFocusedCell({ row, col });
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          row = Math.max(row - 1, 0);
+          if (col === -1) col = 0;
+          if (focusedCell && row === focusedCell.row && focusedCell.row === 0) break;
+          setFocusedCell({ row, col });
+          break;
+        case 'Enter':
+        case ' ':
+          if (focusedCell) {
+            e.preventDefault();
+            onEditButton(focusedCell.row, focusedCell.col);
+          }
+          break;
+        case 'Tab':
+          // Allow Tab to leave the grid
+          setFocusedCell(null);
+          break;
+      }
+    },
+    [focusedCell, onEditButton]
+  );
+
+  // Reset focus when screen changes
+  useEffect(() => {
+    setFocusedCell(null);
+  }, [currentScreenIndex]);
 
   const handleAddScreen = useCallback(() => {
     addScreen();
@@ -182,26 +249,41 @@ export const ScreenGrid: React.FC<{
       {/* Button Grid */}
       <AnimatePresence mode="wait">
         <motion.div
+          ref={gridRef}
           className="button-grid"
           key={currentScreenIndex}
+          tabIndex={0}
+          role="grid"
+          aria-label="Button grid"
+          onKeyDown={handleGridKeyDown}
+          onFocus={() => {
+            if (!focusedCell) setFocusedCell({ row: 0, col: 0 });
+          }}
+          onBlur={() => setFocusedCell(null)}
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ type: 'spring', stiffness: 200, damping: 25 }}
         >
           {Array.from({ length: 5 }).map((_, row) => (
-            <div className="grid-row" key={row}>
+            <div className="grid-row" key={row} role="row">
               {Array.from({ length: 3 }).map((_, col) => {
                 const button = currentScreen?.buttons?.[row]?.[col] || null;
+                const isFocused = focusedCell?.row === row && focusedCell?.col === col;
                 return (
-                  <DockButtonComponent
+                  <div
                     key={`${row}-${col}`}
-                    button={button}
-                    row={row}
-                    col={col}
-                    screenIndex={currentScreenIndex}
-                    onEdit={() => onEditButton(row, col)}
-                  />
+                    role="gridcell"
+                    className={`grid-cell ${isFocused ? 'grid-cell-focused' : ''}`}
+                  >
+                    <DockButtonComponent
+                      button={button}
+                      row={row}
+                      col={col}
+                      screenIndex={currentScreenIndex}
+                      onEdit={() => onEditButton(row, col)}
+                    />
+                  </div>
                 );
               })}
             </div>
