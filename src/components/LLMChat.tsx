@@ -255,39 +255,177 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
       });
     }
 
-    // Regular text message
-    const renderInlineMarkdown = (text: string) => {
-      // Process bold, code, and inline code
-      const parts = text.split(/(\*\*.*?\*\*|`[^`]+`)/g);
-      return parts.map((part, i) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
-          return <strong key={i}>{part.slice(2, -2)}</strong>;
+    // Proper markdown renderer supporting code blocks, headers, links,
+    // bold, italic, inline code, and lists
+    const renderMarkdown = (content: string) => {
+      const lines = content.split('\n');
+      const elements: React.ReactNode[] = [];
+      let inCodeBlock = false;
+      let codeBlockLang = '';
+      let codeBlockLines: string[] = [];
+      let listItems: React.ReactNode[] = [];
+      let listType: 'ul' | 'ol' | null = null;
+
+      const flushList = () => {
+        if (listItems.length === 0) return;
+        if (listType === 'ul') {
+          elements.push(<ul key={`ul-${elements.length}`} className="chat-md-list">{listItems}</ul>);
+        } else {
+          elements.push(<ol key={`ol-${elements.length}`} className="chat-md-list chat-md-ordered">{listItems}</ol>);
         }
-        if (part.startsWith('`') && part.endsWith('`')) {
-          return <code key={i} className="chat-code">{part.slice(1, -1)}</code>;
+        listItems = [];
+        listType = null;
+      };
+
+      const renderInline = (text: string): React.ReactNode => {
+        const tokens: React.ReactNode[] = [];
+        // Match bold, italic, inline code, links
+        const regex = /(\*\*(.+?)\*\*)|(\*(.+?)\*)|(`([^`]+)`)|(\[([^\]]+)\]\(([^)]+)\))/g;
+        let lastIndex = 0;
+        let match: RegExpExecArray | null;
+        let key = 0;
+        while ((match = regex.exec(text)) !== null) {
+          // Text before this match
+          if (match.index > lastIndex) {
+            tokens.push(text.slice(lastIndex, match.index));
+          }
+          if (match[1]) {
+            // Bold
+            tokens.push(<strong key={key++}>{match[2]}</strong>);
+          } else if (match[3]) {
+            // Italic
+            tokens.push(<em key={key++}>{match[4]}</em>);
+          } else if (match[5]) {
+            // Inline code
+            tokens.push(<code key={key++} className="chat-code">{match[6]}</code>);
+          } else if (match[7]) {
+            // Link
+            tokens.push(
+              <a key={key++} href={match[9]} target="_blank" rel="noopener noreferrer" className="chat-md-link">
+                {match[8]}
+              </a>
+            );
+          }
+          lastIndex = match.index + match[0].length;
         }
-        return part;
-      });
+        if (lastIndex < text.length) {
+          tokens.push(text.slice(lastIndex));
+        }
+        return tokens.length === 1 ? tokens[0] : <>{tokens}</>;
+      };
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        // Code block fences
+        if (line.startsWith('```')) {
+          if (inCodeBlock) {
+            // End code block
+            elements.push(
+              <pre key={`code-${elements.length}`} className={`chat-md-code-block ${codeBlockLang ? `lang-${codeBlockLang}` : ''}`}>
+                <code>{codeBlockLines.join('\n')}</code>
+              </pre>
+            );
+            inCodeBlock = false;
+            codeBlockLines = [];
+            codeBlockLang = '';
+          } else {
+            flushList();
+            inCodeBlock = true;
+            codeBlockLang = line.slice(3).trim();
+            codeBlockLines = [];
+          }
+          continue;
+        }
+
+        if (inCodeBlock) {
+          codeBlockLines.push(line);
+          continue;
+        }
+
+        // Headers
+        if (line.startsWith('### ')) {
+          flushList();
+          elements.push(<h4 key={`h-${i}`} className="chat-md-h3">{renderInline(line.slice(4))}</h4>);
+          continue;
+        }
+        if (line.startsWith('## ')) {
+          flushList();
+          elements.push(<h3 key={`h-${i}`} className="chat-md-h2">{renderInline(line.slice(3))}</h3>);
+          continue;
+        }
+        if (line.startsWith('# ')) {
+          flushList();
+          elements.push(<h2 key={`h-${i}`} className="chat-md-h1">{renderInline(line.slice(2))}</h2>);
+          continue;
+        }
+
+        // Horizontal rule
+        if (/^-{3,}$/.test(line) || /^\*{3,}$/.test(line)) {
+          flushList();
+          elements.push(<hr key={`hr-${i}`} className="chat-md-hr" />);
+          continue;
+        }
+
+        // Unordered list
+        if (/^[-*+]\s/.test(line)) {
+          if (listType !== 'ul') flushList();
+          listType = 'ul';
+          listItems.push(
+            <li key={`li-${i}`} className="chat-md-li">{renderInline(line.replace(/^[-*+]\s+/, ''))}</li>
+          );
+          continue;
+        }
+
+        // Ordered list
+        if (/^\d+\.\s/.test(line)) {
+          if (listType !== 'ol') flushList();
+          listType = 'ol';
+          listItems.push(
+            <li key={`li-${i}`} className="chat-md-li">{renderInline(line.replace(/^\d+\.\s+/, ''))}</li>
+          );
+          continue;
+        }
+
+        // Blockquote
+        if (line.startsWith('> ')) {
+          flushList();
+          elements.push(
+            <blockquote key={`bq-${i}`} className="chat-md-blockquote">
+              {renderInline(line.slice(2))}
+            </blockquote>
+          );
+          continue;
+        }
+
+        // Blank line
+        if (line.trim() === '') {
+          flushList();
+          elements.push(<div key={`sp-${i}`} className="chat-md-spacer" />);
+          continue;
+        }
+
+        // Regular paragraph
+        flushList();
+        elements.push(<p key={`p-${i}`} className="chat-md-p">{renderInline(line)}</p>);
+      }
+
+      // Close any remaining code block
+      if (inCodeBlock) {
+        elements.push(
+          <pre key={`code-final`} className="chat-md-code-block">
+            <code>{codeBlockLines.join('\n')}</code>
+          </pre>
+        );
+      }
+      flushList();
+
+      return elements;
     };
 
-    const lines = msg.content.split('\n');
     return (
       <div className="chat-message-content">
-        {lines.map((line, i) => {
-          if (line.startsWith('```')) return null;
-          if (line.startsWith('- ')) {
-            return <div key={i} className="chat-list-item">{renderInlineMarkdown(line.slice(2))}</div>;
-          }
-          if (/^\d+\.\s/.test(line)) {
-            return <div key={i} className="chat-list-item">{renderInlineMarkdown(line.replace(/^\d+\.\s/, ''))}</div>;
-          }
-          return (
-            <span key={i}>
-              {renderInlineMarkdown(line)}
-              {i < lines.length - 1 && <br />}
-            </span>
-          );
-        })}
+        {renderMarkdown(msg.content)}
       </div>
     );
   };
