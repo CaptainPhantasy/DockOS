@@ -305,6 +305,15 @@ export const ButtonEditor: React.FC<ButtonEditorProps> = ({ isOpen, onClose }) =
                       )}
                     </motion.button>
                   ))}
+                  <div className="color-custom-picker">
+                    <input
+                      type="color"
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                      className="color-native-input"
+                      title="Custom color"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
