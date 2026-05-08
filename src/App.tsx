@@ -5,6 +5,8 @@ import {
   Minimize2,
   Maximize2,
   GripVertical,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { useStore } from './store/useStore';
 import ScreenGrid from './components/ScreenGrid';
@@ -37,6 +39,7 @@ const App: React.FC = () => {
   const setLLMChatOpen = useStore((s) => s.setLLMChatOpen);
   const setEditingButton = useStore((s) => s.setEditingButton);
   const screens = useStore((s) => s.screens);
+  const theme = useStore((s) => s.theme);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -103,7 +106,7 @@ const App: React.FC = () => {
   // ---- Menu bar mode: show the dock panel directly, no chrome ----
   if (isMenuBarMode) {
     return (
-      <div className="app-container menubar-mode">
+      <div className={`app-container menubar-mode ${theme === 'light' ? 'theme-light' : ''}`}>
         <div className="menubar-app">
           {/* Compact header */}
           <div className="menubar-app-header">
@@ -115,6 +118,15 @@ const App: React.FC = () => {
               )}
             </div>
             <div className="menubar-app-actions">
+              <motion.button
+                className="panel-action-btn theme-toggle"
+                onClick={() => useStore.getState().setTheme(theme === 'dark' ? 'light' : 'dark')}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              >
+                {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+              </motion.button>
               <motion.button
                 className="panel-action-btn"
                 onClick={() => setIsExpanded(!isExpanded)}
@@ -171,7 +183,7 @@ const App: React.FC = () => {
 
   // ---- Desktop mode: original full-page layout ----
   return (
-    <div className="app-container">
+    <div className={`app-container ${theme === 'light' ? 'theme-light' : ''}`}>
       {/* macOS Desktop Background */}
       <div className="desktop-bg" />
 
@@ -309,6 +321,15 @@ const App: React.FC = () => {
                 <span className="panel-title">StreamDock</span>
               </div>
               <div className="panel-actions">
+                <motion.button
+                  className="panel-action-btn theme-toggle"
+                  onClick={() => useStore.getState().setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+                >
+                  {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+                </motion.button>
                 <motion.button
                   className="panel-action-btn"
                   onClick={() => setIsExpanded(!isExpanded)}

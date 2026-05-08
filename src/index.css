@@ -55,6 +55,41 @@
   --transition-normal: 0.25s ease;
 }
 
+/* ---------- Light Theme ---------- */
+.theme-light {
+  --glass-bg: rgba(245, 245, 247, 0.85);
+  --glass-bg-hover: rgba(235, 235, 237, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-border-hover: rgba(0, 0, 0, 0.18);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --glass-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --glass-blur: 30px;
+  --accent: #007AFF;
+  --accent-glow: rgba(0, 122, 255, 0.2);
+
+  --color-success: #248A3D;
+  --color-warning: #C93400;
+  --color-error: #D70015;
+  --color-info: #007AFF;
+  --color-text-primary: rgba(0, 0, 0, 0.85);
+  --color-text-secondary: rgba(0, 0, 0, 0.55);
+  --color-text-tertiary: rgba(0, 0, 0, 0.35);
+  --color-text-muted: rgba(0, 0, 0, 0.2);
+}
+
+.theme-light .desktop-bg {
+  background: linear-gradient(135deg, #e8e8ed 0%, #d2d2d7 50%, #c7c7cc 100%);
+}
+
+.theme-light .glass-menubar {
+  background: rgba(245, 245, 247, 0.72);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.theme-light .glass-panel {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
 /* ---------- Global Reset ---------- */
 * {
   margin: 0;

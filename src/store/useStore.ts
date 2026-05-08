@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import type { AppState, Screen, LLMConfig, LLMProvider, SecurityGate, CustomTool } from '../types';
+import type { AppState, Screen, LLMConfig, LLMProvider, SecurityGate, CustomTool, ThemeMode } from '../types';
 import { PROVIDER_CONFIGS } from '../types';
 
 const createEmptyScreen = (name?: string, index?: number): Screen => ({
@@ -41,12 +41,14 @@ export const useStore = create<AppState>()(
 
         chatMessages: [],
         isLLMLoading: false,
+        theme: 'dark' as ThemeMode,
 
         setPanelOpen: (open) => set({ isPanelOpen: open }),
         setSettingsOpen: (open) => set({ isSettingsOpen: open }),
         setButtonEditorOpen: (open) => set({ isButtonEditorOpen: open }),
         setLLMChatOpen: (open) => set({ isLLMChatOpen: open }),
         setEditingButton: (edit) => set({ editingButton: edit }),
+        setTheme: (theme) => set({ theme }),
 
         addScreen: (name) =>
           set((state) => {
@@ -165,6 +167,7 @@ export const useStore = create<AppState>()(
         securityGate: state.securityGate,
         chatMessages: state.chatMessages,
         customTools: state.customTools,
+        theme: state.theme,
       }),
     }
   )

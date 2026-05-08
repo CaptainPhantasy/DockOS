@@ -1,3 +1,5 @@
+export type ThemeMode = 'dark' | 'light';
+
 export type LLMProvider = 'anthropic' | 'openai' | 'opencode';
 
 export interface LLMConfig {
@@ -85,6 +87,7 @@ export interface AppState {
   isButtonEditorOpen: boolean;
   isLLMChatOpen: boolean;
   editingButton: { screenIndex: number; row: number; col: number } | null;
+  theme: ThemeMode;
 
   // LLM Config
   llmConfig: LLMConfig;
@@ -104,6 +107,7 @@ export interface AppState {
   setButtonEditorOpen: (open: boolean) => void;
   setLLMChatOpen: (open: boolean) => void;
   setEditingButton: (edit: { screenIndex: number; row: number; col: number } | null) => void;
+  setTheme: (theme: ThemeMode) => void;
 
   addScreen: (name?: string) => void;
   removeScreen: (index: number) => void;
