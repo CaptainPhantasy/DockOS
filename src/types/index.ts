@@ -140,13 +140,45 @@ export const DEFAULT_BUTTON_COLORS = [
 ];
 
 export const DEFAULT_ICONS = [
-  'Terminal', 'Globe', 'Folder', 'FileText', 'Settings',
-  'Play', 'Zap', 'Command', 'Code', 'GitBranch',
-  'Database', 'Server', 'Cpu', 'Monitor', 'HardDrive',
-  'Wifi', 'Lock', 'Key', 'Shield', 'Bug',
-  'Package', 'Layers', 'Box', 'Coffee', 'Rocket',
-  'Star', 'Heart', 'Music', 'Camera', 'Bell',
-  'Calendar', 'Clock', 'Map', 'Phone', 'Mail',
+  // Development & Code
+  'Terminal', 'Code', 'GitBranch', 'GitCommit', 'GitPullRequest', 'GitMerge',
+  'Bug', 'Wrench', 'Hammer', 'Cog', 'Puzzle', 'Cpu',
+  'Server', 'Database', 'HardDrive', 'Globe', 'Command', 'FileCode',
+  'Braces', 'Binary', 'Workflow', 'Webhook', 'Container', 'Blocks',
+
+  // Media & Creative
+  'Play', 'Pause', 'SkipForward', 'SkipBack', 'Volume2', 'Music',
+  'Camera', 'Image', 'Video', 'Film', 'Mic', 'Headphones',
+  'Palette', 'Brush', 'PenTool', 'Pencil', 'Eraser', 'Frame',
+  'Sparkles', 'Star', 'Heart', 'Flame', 'Zap', 'Rocket',
+
+  // Communication
+  'Mail', 'MessageSquare', 'MessageCircle', 'Send', 'Phone', 'Bell',
+  'Megaphone', 'Radio', 'Wifi', 'Rss', 'AtSign', 'Hash',
+
+  // Navigation & Layout
+  'Home', 'Compass', 'Map', 'MapPin', 'Navigation', 'Anchor',
+  'LayoutDashboard', 'LayoutGrid', 'LayoutList', 'PanelLeft', 'Menu', 'ArrowRight',
+
+  // Files & Documents
+  'FileText', 'File', 'Folder', 'FolderOpen', 'Archive', 'Package',
+  'Download', 'Upload', 'Cloud', 'Clipboard', 'Files', 'FileCheck',
+
+  // System & Settings
+  'Settings', 'Shield', 'Lock', 'Key', 'Eye', 'EyeOff',
+  'Monitor', 'Smartphone', 'Watch', 'Laptop', 'Battery', 'Power',
+
+  // Status & Feedback
+  'Check', 'CheckCircle', 'XCircle', 'AlertCircle', 'AlertTriangle', 'Info',
+  'Clock', 'Timer', 'Calendar', 'Activity', 'TrendingUp', 'BarChart3',
+
+  // Actions
+  'Plus', 'Minus', 'Search', 'Filter', 'RefreshCw', 'RotateCw',
+  'Copy', 'Trash2', 'Edit', 'Save', 'Share2', 'ExternalLink',
+
+  // Misc & Fun
+  'Coffee', 'Sun', 'Moon', 'CloudRain', 'Snowflake', 'Umbrella',
+  'Gamepad2', 'Trophy', 'Target', 'Dumbbell', 'Bike', 'Plane',
 ];
 
 export const PROVIDER_CONFIGS: Record<LLMProvider, { name: string; defaultModel: string; defaultBaseUrl: string }> = {
