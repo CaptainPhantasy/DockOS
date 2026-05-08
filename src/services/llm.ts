@@ -143,7 +143,7 @@ async function callOpenAI(
 
   const body: Record<string, unknown> = {
     model: config.model,
-    max_tokens: config.maxTokens,
+    max_completion_tokens: config.maxTokens,
     temperature: config.temperature,
     messages: openaiMessages,
   };
