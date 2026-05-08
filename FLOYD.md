@@ -17,6 +17,7 @@ Vite injects `__APP_VERSION__` at build time via `vite.config.ts`. The footer re
 
 | Version | Date | Summary |
 |---------|------|---------|
+| 1.2.1 | 2026-05-08 | LLM ambiguity resolution rule, search_brand_logo in system prompt |
 | 1.2.0 | 2026-05-08 | Logo search tool (Clearbit), async tool execution, URL image rendering |
 | 1.1.0 | 2026-05-08 | Version tag system, remove debug banner |
 | 1.0.0 | 2026-05-07 | Native command bridge, CSS variable theme system, max_completion_tokens |
