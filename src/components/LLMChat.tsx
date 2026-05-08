@@ -111,12 +111,55 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
   // Pending approvals: tool_use_id -> { resolve, toolCall }
   const [pendingApprovals, setPendingApprovals] = useState<Map<string, { resolve: (v: boolean) => void; toolCall: ToolCall }>>(new Map());
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const approvalResolverRef = useRef<Map<string, (v: boolean) => void>>(new Map());
+  const isUserScrolledRef = useRef(false);
+
+  // Smart auto-scroll: scrolls on new messages, respects user scroll
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    if (isUserScrolledRef.current) return;
+    chatContainerRef.current?.scrollTo({
+      top: chatContainerRef.current.scrollHeight,
+      behavior,
+    });
+  }, []);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
+    scrollToBottom('smooth');
+  }, [chatMessages, scrollToBottom]);
+
+  // MutationObserver for content changes within messages (markdown rendering, etc)
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (!container) return;
+
+    const observer = new MutationObserver(() => {
+      if (!isUserScrolledRef.current) {
+        scrollToBottom('auto');
+      }
+    });
+
+    observer.observe(container, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, [scrollToBottom]);
+
+  // Detect user scroll (pause auto-scroll when user scrolls up)
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      if (!container) return;
+      const atBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 40;
+      isUserScrolledRef.current = !atBottom;
+      // If user scrolls to bottom, resume auto-scroll
+      if (atBottom) isUserScrolledRef.current = false;
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -477,7 +520,7 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            <div className="chat-messages">
+            <div className="chat-messages" ref={chatContainerRef}>
               {chatMessages.length === 0 && (
                 <div className="chat-empty">
                   <Sparkles size={28} className="text-white/20" />
