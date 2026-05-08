@@ -9,10 +9,10 @@
 :root {
   --glass-bg: rgba(30, 30, 35, 0.72);
   --glass-bg-hover: rgba(40, 40, 48, 0.78);
-  --glass-border: var(--glass-border);
-  --glass-border-hover: var(--glass-border-hover);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-hover: rgba(255, 255, 255, 0.2);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
-  --glass-inner-glow: inset 0 1px 0 var(--glass-surface-3);
+  --glass-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --glass-blur: 40px;
   --glass-blur-heavy: 60px;
   --accent: #007AFF;
@@ -48,14 +48,48 @@
   --color-text-muted: rgba(255, 255, 255, 0.25);
 
   /* Glass surface opacity variants */
-  --glass-surface-1: var(--glass-surface-1);
-  --glass-surface-2: var(--glass-surface-2);
-  --glass-surface-3: var(--glass-surface-3);
-  --glass-surface-4: var(--glass-surface-4);
-  --glass-surface-5: var(--glass-surface-5);
-  --glass-overlay: var(--glass-overlay);
-  --glass-overlay-light: var(--glass-overlay-light);
+  --glass-surface-1: rgba(255, 255, 255, 0.03);
+  --glass-surface-2: rgba(255, 255, 255, 0.06);
+  --glass-surface-3: rgba(255, 255, 255, 0.08);
+  --glass-surface-4: rgba(255, 255, 255, 0.1);
+  --glass-surface-5: rgba(255, 255, 255, 0.15);
+  --glass-overlay: rgba(0, 0, 0, 0.3);
+  --glass-overlay-light: rgba(0, 0, 0, 0.15);
   --border-subtle: var(--glass-surface-2);
+
+  /* Button system */
+  --btn-border: var(--glass-surface-3);
+  --btn-empty-border: var(--glass-surface-2);
+  --btn-empty-bg: var(--glass-surface-1);
+  --btn-empty-hover-border: var(--glass-border-hover);
+  --btn-empty-hover-bg: var(--glass-surface-2);
+  --btn-filled-hover-border: var(--color-text-muted);
+  --btn-filled-hover-shadow: 0 4px 20px var(--glass-overlay), var(--glass-inner-glow);
+  --btn-shine-opacity: 1;
+
+  /* Navigation */
+  --nav-btn-bg: var(--glass-surface-2);
+  --nav-btn-border: var(--glass-surface-3);
+  --nav-btn-hover-bg: var(--glass-surface-4);
+  --nav-btn-hover-border: var(--glass-surface-5);
+
+  /* Toolbar */
+  --toolbar-btn-color: var(--color-text-tertiary);
+  --toolbar-btn-hover-bg: var(--glass-surface-3);
+
+  /* Screen dots */
+  --screen-dot-bg: var(--glass-surface-5);
+  --screen-dot-hover-bg: var(--glass-surface-5);
+
+  /* Focus */
+  --focus-outline-color: var(--accent);
+  --focus-ring: transparent;
+
+  /* Separators */
+  --separator-gradient: linear-gradient(90deg, transparent, var(--glass-surface-4), transparent);
+
+  /* Container */
+  --container-bg: var(--glass-bg);
 
   --radius: 16px;
   --radius-sm: 10px;
@@ -69,13 +103,13 @@
 .theme-light {
   --glass-bg: rgba(245, 245, 247, 0.85);
   --glass-bg-hover: rgba(235, 235, 237, 0.9);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --glass-border-hover: rgba(0, 0, 0, 0.18);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-  --glass-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.12);
+  --glass-border-hover: rgba(0, 0, 0, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
+  --glass-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
   --glass-blur: 30px;
   --accent: #007AFF;
-  --accent-glow: rgba(0, 122, 255, 0.2);
+  --accent-glow: rgba(0, 122, 255, 0.15);
 
   --color-success: #248A3D;
   --color-warning: #C93400;
@@ -83,21 +117,62 @@
   --color-info: #007AFF;
   --color-text-primary: rgba(0, 0, 0, 0.85);
   --color-text-secondary: rgba(0, 0, 0, 0.55);
-  --color-text-tertiary: rgba(0, 0, 0, 0.35);
-  --color-text-muted: rgba(0, 0, 0, 0.2);
+  --color-text-tertiary: rgba(0, 0, 0, 0.55);
+  --color-text-muted: rgba(0, 0, 0, 0.45);
+  --glass-surface-1: rgba(0, 0, 0, 0.03);
+  --glass-surface-2: rgba(0, 0, 0, 0.06);
+  --glass-surface-3: rgba(0, 0, 0, 0.09);
+  --glass-surface-4: rgba(0, 0, 0, 0.12);
+  --glass-surface-5: rgba(0, 0, 0, 0.18);
+  --glass-overlay: rgba(0, 0, 0, 0.1);
+  --glass-overlay-light: rgba(0, 0, 0, 0.06);
+  --border-subtle: rgba(0, 0, 0, 0.08);
+
+  /* Button-specific overrides */
+  --btn-border: rgba(0, 0, 0, 0.1);
+  --btn-empty-border: rgba(0, 0, 0, 0.12);
+  --btn-empty-bg: rgba(0, 0, 0, 0.02);
+  --btn-empty-hover-border: rgba(0, 0, 0, 0.2);
+  --btn-empty-hover-bg: rgba(0, 0, 0, 0.04);
+  --btn-filled-hover-border: rgba(0, 0, 0, 0.2);
+  --btn-filled-hover-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  --btn-shine-opacity: 0.05;
+
+  /* Navigation */
+  --nav-btn-bg: rgba(0, 0, 0, 0.03);
+  --nav-btn-border: rgba(0, 0, 0, 0.08);
+  --nav-btn-hover-bg: rgba(0, 0, 0, 0.06);
+  --nav-btn-hover-border: rgba(0, 0, 0, 0.12);
+
+  /* Toolbar */
+  --toolbar-btn-color: var(--color-text-secondary);
+  --toolbar-btn-hover-bg: rgba(0, 0, 0, 0.05);
+
+  /* Screen dots */
+  --screen-dot-bg: rgba(0, 0, 0, 0.12);
+  --screen-dot-hover-bg: rgba(0, 0, 0, 0.2);
+
+  /* Focus */
+  --focus-outline-color: #0062CC;
+  --focus-ring: rgba(0, 122, 255, 0.3);
+
+  /* Separators */
+  --separator-gradient: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+
+  /* Container */
+  --container-bg: rgba(245, 245, 247, 0.95);
 }
 
+/* Desktop background — only rendered in non-menubar mode */
 .theme-light .desktop-bg {
   background: linear-gradient(135deg, #e8e8ed 0%, #d2d2d7 50%, #c7c7cc 100%);
 }
 
-.theme-light .glass-menubar {
-  background: rgba(245, 245, 247, 0.72);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.theme-light .glass-panel {
-  border: 1px solid rgba(0, 0, 0, 0.08);
+.theme-light .hero-title {
+  background: linear-gradient(135deg, #111827 0%, #007AFF 45%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ---------- Global Reset ---------- */
@@ -206,18 +281,18 @@ body {
 .apple-logo {
   font-size: 14px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-primary);
 }
 
 .menubar-app-name {
   font-size: 13px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .menubar-item {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-secondary);
   cursor: default;
   padding: 2px 6px;
   border-radius: 4px;
@@ -225,7 +300,7 @@ body {
 }
 
 .menubar-item:hover {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
   background: var(--glass-surface-3);
 }
 
@@ -237,13 +312,13 @@ body {
 
 .menubar-status {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary);
   padding: 2px 4px;
 }
 
 .menubar-clock {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary);
   font-weight: 500;
   padding: 2px 8px;
   border-radius: 4px;
@@ -259,7 +334,7 @@ body {
   border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary);
   cursor: pointer;
   font-size: 12px;
   font-weight: 500;
@@ -269,7 +344,7 @@ body {
 
 .menubar-dock-toggle:hover {
   background: var(--glass-surface-4);
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-primary);
 }
 
 .menubar-dock-toggle.active {
@@ -345,19 +420,19 @@ body {
 
 .hero-subtitle {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary);
   font-weight: 400;
 }
 
 .hero-hint {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--color-text-tertiary);
   margin-top: 8px;
 }
 
 .hero-shortcut {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--color-text-muted);
   margin-top: 4px;
 }
 
@@ -418,7 +493,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-2) var(--space-4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .panel-title-area {
@@ -441,7 +516,7 @@ body {
 .panel-action-btn {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   padding: 4px;
   border-radius: 6px;
@@ -449,7 +524,7 @@ body {
 }
 
 .panel-action-btn:hover {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-primary);
   background: var(--glass-surface-3);
 }
 
@@ -463,7 +538,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 8px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .footer-text {
@@ -495,7 +570,7 @@ body {
   border-radius: var(--radius-xs);
   border: 1px solid transparent;
   background: transparent;
-  color: var(--color-text-tertiary);
+  color: var(--toolbar-btn-color);
   cursor: pointer;
   font-size: var(--text-sm);
   font-weight: 500;
@@ -505,7 +580,7 @@ body {
 
 .toolbar-btn:hover {
   color: var(--color-text-primary);
-  background: var(--glass-surface-3);
+  background: var(--toolbar-btn-hover-bg);
   border-color: var(--glass-surface-3);
 }
 
@@ -547,7 +622,7 @@ body {
   border-radius: var(--radius-xs);
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-secondary);
   cursor: pointer;
   font-size: 12px;
   width: 100%;
@@ -556,7 +631,7 @@ body {
 }
 
 .screen-menu-item.active {
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-primary);
   background: rgba(0, 122, 255, 0.15);
 }
 
@@ -570,7 +645,7 @@ body {
 .screen-menu-delete {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-muted);
   cursor: pointer;
   padding: 2px;
   border-radius: 4px;
@@ -598,17 +673,17 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid var(--glass-surface-3);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--nav-btn-border);
+  background: var(--nav-btn-bg);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: var(--glass-surface-4);
-  color: rgba(255, 255, 255, 0.9);
-  border-color: var(--glass-surface-5);
+  background: var(--nav-btn-hover-bg);
+  color: var(--color-text-primary);
+  border-color: var(--nav-btn-hover-border);
 }
 
 .nav-btn:disabled {
@@ -626,7 +701,7 @@ body {
 .screen-name {
   font-size: 13px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-primary);
 }
 
 .screen-dots {
@@ -639,7 +714,7 @@ body {
   height: 8px;
   border-radius: 50%;
   border: none;
-  background: var(--glass-surface-5);
+  background: var(--screen-dot-bg);
   cursor: pointer;
   padding: 0;
   margin: 0 2px;
@@ -654,7 +729,7 @@ body {
 }
 
 .screen-dot:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--screen-dot-hover-bg);
 }
 
 /* ---------- Button Grid ---------- */
@@ -694,22 +769,22 @@ body {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--glass-surface-3);
+  border: 1px solid var(--btn-border);
   transition: border-color var(--transition-fast);
 }
 
 .dock-btn-empty {
-  background: var(--glass-surface-1);
+  background: var(--btn-empty-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-style: dashed;
-  border-color: var(--glass-surface-2);
+  border-color: var(--btn-empty-border);
 }
 
 .dock-btn-empty:hover {
-  border-color: var(--glass-border-hover);
+  border-color: var(--btn-empty-hover-border);
   border-style: solid;
-  background: var(--glass-surface-2);
+  background: var(--btn-empty-hover-bg);
 }
 
 .dock-btn-filled {
@@ -719,8 +794,8 @@ body {
 }
 
 .dock-btn-filled:hover {
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 20px var(--glass-overlay), var(--glass-inner-glow);
+  border-color: var(--btn-filled-hover-border);
+  box-shadow: var(--btn-filled-hover-shadow);
 }
 
 /* Button Shine Effect */
@@ -737,6 +812,7 @@ body {
   );
   background-size: 200% 100%;
   pointer-events: none;
+  opacity: var(--btn-shine-opacity);
   transition: opacity 0.3s;
 }
 
@@ -764,7 +840,7 @@ body {
   align-items: center;
   gap: 6px;
   z-index: 2;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .btn-label {
@@ -781,8 +857,9 @@ body {
 
 /* ---------- Focus Visible ---------- */
 .dock-btn:focus-visible, .toolbar-btn:focus-visible, .btn-primary:focus-visible, .btn-secondary:focus-visible, .btn-danger:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-outline-color);
   outline-offset: 2px;
+  box-shadow: 0 0 0 1px var(--focus-ring);
 }
 
 /* Last Run Indicator */
@@ -820,7 +897,7 @@ body {
   position: absolute;
   bottom: 4px;
   font-size: 7px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-muted);
   pointer-events: none;
   white-space: nowrap;
 }
@@ -835,7 +912,7 @@ body {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   font-weight: 500;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass-surface-2);
   padding: 2px 8px;
   border-radius: 10px;
 }
@@ -882,7 +959,7 @@ body {
 .modal-title {
   font-size: 16px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -894,7 +971,7 @@ body {
   border-radius: 50%;
   border: none;
   background: var(--glass-surface-3);
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -978,7 +1055,7 @@ body {
 .field-label {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: flex;
@@ -992,7 +1069,7 @@ body {
   border-radius: var(--radius-xs);
   padding: 8px 12px;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
   font-family: inherit;
   outline: none;
   transition: all var(--transition-fast);
@@ -1005,7 +1082,7 @@ body {
 }
 
 .field-input::placeholder {
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--color-text-muted);
 }
 
 .field-textarea {
@@ -1014,7 +1091,7 @@ body {
   border-radius: var(--radius-xs);
   padding: 8px 12px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
   outline: none;
   resize: vertical;
@@ -1046,7 +1123,7 @@ body {
   border-radius: 50%;
   background: var(--accent);
   cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid var(--glass-surface-5);
   box-shadow: 0 0 8px var(--accent-glow);
 }
 
@@ -1074,7 +1151,7 @@ body {
   border-radius: var(--radius-xs);
   border: 1px solid var(--glass-surface-3);
   background: var(--glass-surface-1);
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   transition: all var(--transition-fast);
   text-align: left;
@@ -1088,7 +1165,7 @@ body {
 .command-type-btn.active {
   background: rgba(0, 122, 255, 0.12);
   border-color: rgba(0, 122, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .command-type-label {
@@ -1131,8 +1208,8 @@ body {
   padding: 6px;
   border-radius: 6px;
   border: 1px solid var(--glass-surface-2);
-  background: rgba(255, 255, 255, 0.02);
-  color: rgba(255, 255, 255, 0.4);
+  background: var(--glass-surface-1);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   transition: all var(--transition-fast);
   display: flex;
@@ -1144,13 +1221,13 @@ body {
 
 .icon-btn:hover {
   background: var(--glass-surface-3);
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-primary);
 }
 
 .icon-btn.active {
   background: rgba(0, 122, 255, 0.15);
   border-color: rgba(0, 122, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .icon-name {
@@ -1249,7 +1326,7 @@ body {
   border-radius: var(--radius-xs);
   border: 1px solid var(--glass-surface-4);
   background: var(--glass-surface-2);
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -1259,7 +1336,7 @@ body {
 
 .btn-secondary:hover {
   background: var(--glass-surface-4);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .btn-danger {
@@ -1288,8 +1365,8 @@ body {
   height: 32px;
   border-radius: var(--radius-xs);
   border: 1px solid var(--glass-surface-3);
-  background: rgba(255, 255, 255, 0.04);
-  color: rgba(255, 255, 255, 0.5);
+  background: var(--glass-surface-2);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1299,7 +1376,7 @@ body {
 
 .btn-icon:hover {
   background: var(--glass-surface-4);
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-primary);
 }
 
 .btn-icon-danger:hover {
@@ -1317,7 +1394,7 @@ body {
   flex-direction: column;
   gap: var(--space-2);
   padding-bottom: var(--space-4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-subtle);
   margin-bottom: var(--space-4);
 }
 
@@ -1352,7 +1429,7 @@ body {
   border-radius: var(--radius-xs);
   border: 1px solid var(--glass-surface-3);
   background: var(--glass-surface-1);
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-tertiary);
   cursor: pointer;
   text-align: center;
   transition: all var(--transition-fast);
@@ -1366,7 +1443,7 @@ body {
 .provider-btn.active {
   background: rgba(0, 122, 255, 0.12);
   border-color: rgba(0, 122, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .provider-name {
@@ -1480,7 +1557,7 @@ body {
 .gate-option-label {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .gate-option.active .gate-option-label {
@@ -1489,7 +1566,7 @@ body {
 
 .gate-option-desc {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-tertiary);
   line-height: 1.4;
   padding-left: 20px;
 }
@@ -1531,7 +1608,7 @@ body {
 }
 
 .chat-suggestion-chip {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass-surface-2);
   border: 1px solid var(--glass-surface-3);
   border-radius: 10px;
   color: var(--color-text-secondary);
@@ -1663,7 +1740,7 @@ body {
 .chat-copy-btn {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-muted);
   cursor: pointer;
   padding: 2px;
   border-radius: 4px;
@@ -1739,7 +1816,7 @@ body {
 }
 /* ---------- Tool Call Blocks ---------- */
 .tool-call-block {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass-surface-2);
   border: 1px solid var(--glass-surface-3);
   border-radius: 10px;
   overflow: hidden;
@@ -1758,16 +1835,16 @@ body {
   gap: 6px;
   padding: 6px 10px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-secondary);
   transition: background var(--transition-fast);
 }
 
 .tool-call-header:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--glass-surface-2);
 }
 
 .tool-call-toggle {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-muted);
   display: flex;
   align-items: center;
 }
@@ -1811,7 +1888,7 @@ body {
 .tool-call-label {
   font-size: 9px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: block;
@@ -1821,7 +1898,7 @@ body {
 .tool-call-args pre,
 .tool-call-result pre {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-secondary);
   font-family: 'SF Mono', 'Fira Code', monospace;
   background: rgba(0, 0, 0, 0.2);
   padding: 6px 8px;
@@ -1858,7 +1935,7 @@ body {
 
 .tool-approval-prompt span {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-secondary);
 }
 
 .tool-approval-buttons {
@@ -1890,8 +1967,8 @@ body {
 /* Chat message type variants */
 .chat-message.tool-message,
 .chat-message.tool-result-message {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--glass-surface-1);
+  border: 1px solid var(--border-subtle);
   padding: 4px 8px;
   max-width: 95%;
 }
@@ -2032,8 +2109,8 @@ body {
   display: none !important;
 }
 
-.menubar-mode .app-container {
-  background: var(--glass-bg);
+.app-container.menubar-mode {
+  background: var(--container-bg);
   backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
   border: 1px solid var(--glass-border);
@@ -2065,7 +2142,7 @@ body {
 .menubar-app-title {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
 }
 
 .menubar-app-badge {
@@ -2090,7 +2167,7 @@ body {
 .menubar-app-separator {
   height: 1px;
   margin: 0 14px;
-  background: linear-gradient(90deg, transparent, var(--glass-surface-4), transparent);
+  background: var(--separator-gradient);
 }
 
 /* Body: the screen grid area fills remaining space */
@@ -2105,7 +2182,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 6px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-subtle);
 }
 
 /* ---- Menu bar mode: tighter controls for compact viewport ---- */
@@ -2117,7 +2194,7 @@ body {
 .menubar-mode .toolbar {
   gap: 2px;
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .menubar-mode .toolbar-btn {
@@ -2165,7 +2242,7 @@ body {
 
 .mcp-empty {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-muted);
   text-align: center;
   padding: 8px;
 }
@@ -2191,7 +2268,7 @@ body {
 .mcp-tool-name {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2199,7 +2276,7 @@ body {
 
 .mcp-tool-url {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--color-text-tertiary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2241,8 +2318,8 @@ body {
 
 .mcp-test-result {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text-secondary);
+  background: var(--glass-surface-2);
   padding: 6px 10px;
   border-radius: var(--radius-xs);
   word-break: break-all;

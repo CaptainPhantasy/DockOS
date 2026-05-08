@@ -523,7 +523,7 @@ export const LLMChat: React.FC<LLMChatProps> = ({ isOpen, onClose }) => {
             <div className="chat-messages" ref={chatContainerRef}>
               {chatMessages.length === 0 && (
                 <div className="chat-empty">
-                  <Sparkles size={28} className="text-white/20" />
+                  <Sparkles size={28} style={{ color: 'var(--color-text-muted)' }} />
                   <p className="chat-empty-title">What can I help with?</p>
                   <div className="chat-suggestions">
                     {['Show my screens', 'Create a build button', 'List all commands'].map((s) => (

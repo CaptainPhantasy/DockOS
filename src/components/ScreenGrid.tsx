@@ -13,6 +13,7 @@ import {
 import { useStore } from '../store/useStore';
 import { DockButtonComponent } from './DockButton';
 import { playTick } from '../services/audio';
+import { getThemeTokens } from '../utils/theme';
 
 export const ScreenGrid: React.FC<{
   onOpenSettings: () => void;
@@ -27,7 +28,8 @@ export const ScreenGrid: React.FC<{
   const addScreen = useStore((s) => s.addScreen);
   const removeScreen = useStore((s) => s.removeScreen);
   const llmConfig = useStore((s) => s.llmConfig);
-
+  const theme = useStore((s) => s.theme);
+  const tokens = getThemeTokens(theme);
   const [isScreenMenuOpen, setIsScreenMenuOpen] = useState(false);
   const [focusedCell, setFocusedCell] = useState<{ row: number; col: number } | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -178,7 +180,7 @@ export const ScreenGrid: React.FC<{
                   setCurrentScreenIndex(index);
                   setIsScreenMenuOpen(false);
                 }}
-                whileHover={{ x: 4, backgroundColor: 'rgba(255,255,255,0.1)' }}
+                whileHover={{ x: 4, backgroundColor: tokens.hoverBg }}
               >
                 <Grid3x3 size={14} />
                 <span className="screen-menu-name">{screen.name}</span>

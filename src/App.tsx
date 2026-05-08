@@ -139,7 +139,7 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="menubar-app-separator" />
+          <div style={{background:'#ff0000',color:'#fff',fontSize:'13px',fontWeight:800,textAlign:'center',padding:'4px 0',fontFamily:'monospace',letterSpacing:'1px'}}>BUILD FLOYD-2026MAY08-B2</div>
 
           {/* Screen grid fills the remaining space */}
           <div className="menubar-app-body">
@@ -310,7 +310,7 @@ const App: React.FC = () => {
               className="dock-panel-handle"
               onPointerDown={(e) => dragControls.start(e)}
             >
-              <GripVertical size={14} className="text-white/20" />
+              <GripVertical size={14} style={{ color: 'var(--color-text-muted)' }} />
               <div className="handle-line" />
             </div>
 

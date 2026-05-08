@@ -4,6 +4,8 @@ import { useStore } from '../store/useStore';
 import type { DockButton as DockButtonType } from '../types';
 import * as LucideIcons from 'lucide-react';
 import { playClick, playSuccess } from '../services/audio';
+import { getThemeTokens } from '../utils/theme';
+import { executeCommand } from '../services/commands';
 
 interface DockButtonProps {
   button: DockButtonType | null;
@@ -27,7 +29,8 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
   const [showCopied, setShowCopied] = useState(false);
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
   const updateButton = useStore((s) => s.updateButton);
-
+  const theme = useStore((s) => s.theme);
+  const tokens = getThemeTokens(theme);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-50, 50], [8, -8]);
@@ -72,8 +75,8 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
     playClick();
     updateButton(screenIndex, row, col, { lastRun: Date.now() });
 
-    // Copy command to clipboard
-    navigator.clipboard.writeText(button.command).then(() => {
+    // Execute via native bridge (or clipboard fallback in browser)
+    executeCommand(button.commandType, button.command).then((result) => {
       playSuccess();
       setShowCopied(true);
       setTimeout(() => setShowCopied(false), 1500);
@@ -93,7 +96,7 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
       <motion.div
         className="dock-btn dock-btn-empty"
         onClick={onEdit}
-        whileHover={{ scale: 1.06, backgroundColor: 'rgba(255,255,255,0.08)' }}
+        whileHover={{ scale: 1.06, backgroundColor: tokens.hoverBg }}
         whileTap={{ scale: 0.97 }}
         transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         initial={{ opacity: 0, scale: 0.8 }}
@@ -104,7 +107,7 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
           animate={{ opacity: [0.2, 0.4, 0.2] }}
           transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <LucideIcons.Plus size={20} strokeWidth={1.5} className="text-white/20" />
+          <LucideIcons.Plus size={20} strokeWidth={1.5} style={{ color: 'var(--color-text-muted)' }} />
         </motion.div>
       </motion.div>
     );
@@ -115,8 +118,8 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
       className="dock-btn dock-btn-filled"
       title={`${button.label}: ${button.command}`}
       style={{
-        background: `linear-gradient(135deg, ${button.color}22 0%, ${button.color}44 100%)`,
-        borderColor: `${button.color}66`,
+        background: `linear-gradient(135deg, ${button.color}${tokens.btnAlphaStart} 0%, ${button.color}${tokens.btnAlphaEnd} 100%)`,
+        borderColor: `${button.color}${tokens.btnBorderAlpha}`,
         transformStyle: 'preserve-3d',
         perspective: 800,
         rotateX: springRotateX,
@@ -178,7 +181,7 @@ export const DockButtonComponent: React.FC<DockButtonProps> = ({ button, row, co
         <motion.div
           animate={{
             scale: isPressed ? 0.85 : 1,
-            filter: isHovered ? 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' : 'none',
+            filter: isHovered ? `drop-shadow(0 0 8px ${tokens.hoverShadow})` : 'none',
           }}
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         >
@@ -230,7 +233,7 @@ const AnimatePresenceForCopied: React.FC<{ show: boolean }> = ({ show }) => (
     animate={show ? { opacity: 1, y: -30, scale: 1 } : { opacity: 0, y: 10, scale: 0.8 }}
     transition={{ type: 'spring', stiffness: 400, damping: 25 }}
   >
-    Copied!
+    Executed!
   </motion.div>
 );
 

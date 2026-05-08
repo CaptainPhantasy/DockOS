@@ -97,7 +97,48 @@ export const ButtonEditor: React.FC<ButtonEditorProps> = ({ isOpen, onClose }) =
 
     try {
       addChatMessage({ role: 'user', content: llmPrompt });
-      const systemPrompt = `You are an expert macOS automation assistant. Generate ONLY the raw command/script for the following request. No explanations, no markdown formatting, no code blocks. Just the raw command that can be directly executed. If it's an AppleScript, provide the complete script. If it's a shell command, provide just the command. If it's a URL, provide just the URL.`;
+      const systemPrompt = `You are a macOS automation command generator for StreamDock, a menu bar app.
+
+The user will describe what they want a single button to do. You generate the raw command.
+
+## Command Types
+
+The command type is: **${commandType}**. Generate ONLY output valid for this type.
+
+### shell
+A single shell command executed silently via /bin/zsh -c. No output is shown to the user.
+- Good for: file operations, system tasks, launching apps, background processes
+- Examples: open -a Safari, say "hello", pmset displaysleepnow, afplay /path/to/sound.mp3
+- Prefix background processes with nohup and suffix with &
+- NEVER use keystroke or System Events — this runs in a shell, not as UI automation
+
+### applescript
+A complete AppleScript executed via /usr/bin/osascript. Targets apps BY NAME.
+- Good for: app-specific automation, UI scripting (click menu items, not keystrokes)
+- Use \"tell application \"Safari\" to open location \"https://...\"\" — NOT keystroke
+- Use \"tell application \"Mail\" to ...\" for Mail automation
+- For inserting text: copy to clipboard then paste with \"set the clipboard to X; tell application \"System Events\" to keystroke \"v\" using command down\"
+- For opening apps: \"tell application \"Safari\" to activate\"
+- AVOID: keystroke for typing text (wrong focus), key code (requires accessibility)
+- PREFER: direct app commands (open location, make new document, set body of message)
+
+### terminal
+A multi-line bash script that opens in Terminal.app and runs visibly.
+- Good for: SSH sessions, long-running processes, interactive scripts the user needs to watch
+- Write complete, self-contained bash
+- Start with #!/bin/bash if multi-line
+- The user will see Terminal.app open and the script execute
+
+### url
+A single URL opened in the default browser.
+- Just the URL, nothing else: https://..., mailto:..., tel:...
+- For web apps: https://chat.openai.com, https://github.com, etc.
+- For email: mailto:user@example.com?subject=Hello
+
+## Rules
+- Output ONLY the raw command/script/URL. No explanations, no markdown, no code fences.
+- If the request doesn't match the selected command type, generate the best approximation.
+- NEVER generate \"tell application \\\"System Events\\" to keystroke\\\" for typing text — it will type into the wrong app because clicking the StreamDock button steals focus.`;
 
       const response = await callLLM(
         [{ role: 'user', content: llmPrompt }],
