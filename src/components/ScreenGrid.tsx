@@ -260,21 +260,30 @@ export const ScreenGrid: React.FC<{
             if (!focusedCell) setFocusedCell({ row: 0, col: 0 });
           }}
           onBlur={() => setFocusedCell(null)}
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
         >
           {Array.from({ length: 5 }).map((_, row) => (
             <div className="grid-row" key={row} role="row">
               {Array.from({ length: 3 }).map((_, col) => {
                 const button = currentScreen?.buttons?.[row]?.[col] || null;
                 const isFocused = focusedCell?.row === row && focusedCell?.col === col;
+                const staggerDelay = (row * 3 + col) * 0.04;
                 return (
-                  <div
+                  <motion.div
                     key={`${row}-${col}`}
                     role="gridcell"
                     className={`grid-cell ${isFocused ? 'grid-cell-focused' : ''}`}
+                    initial={{ opacity: 0, scale: 0.6, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 350,
+                      damping: 25,
+                      delay: staggerDelay,
+                    }}
                   >
                     <DockButtonComponent
                       button={button}
@@ -283,7 +292,7 @@ export const ScreenGrid: React.FC<{
                       screenIndex={currentScreenIndex}
                       onEdit={() => onEditButton(row, col)}
                     />
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
