@@ -2180,9 +2180,18 @@ body {
 /* Compact footer */
 .menubar-app-footer {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
   padding: 6px 14px;
   border-top: 1px solid var(--border-subtle);
+}
+
+.footer-version {
+  margin-left: auto;
+  opacity: 0.55;
+  font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.5px;
 }
 
 /* ---- Menu bar mode: tighter controls for compact viewport ---- */

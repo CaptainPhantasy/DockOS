@@ -9,6 +9,7 @@ import {
   Moon,
 } from 'lucide-react';
 import { useStore } from './store/useStore';
+import { APP_VERSION } from './constants/version';
 import ScreenGrid from './components/ScreenGrid';
 import { ButtonEditor } from './components/ButtonEditor';
 import { Settings } from './components/Settings';
@@ -139,8 +140,6 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div style={{background:'#ff0000',color:'#fff',fontSize:'13px',fontWeight:800,textAlign:'center',padding:'4px 0',fontFamily:'monospace',letterSpacing:'1px'}}>BUILD FLOYD-2026MAY08-B2</div>
-
           {/* Screen grid fills the remaining space */}
           <div className="menubar-app-body">
             <ScreenGrid
@@ -153,11 +152,12 @@ const App: React.FC = () => {
           {/* Compact footer */}
           <div className="menubar-app-footer">
             <span className="footer-text">
-              {totalButtons} command{totalButtons !== 1 ? 's' : ''}
+              {totalButtons} cmd{totalButtons !== 1 ? 's' : ''}
             </span>
             <span className="footer-text">
               {screens.length} screen{screens.length !== 1 ? 's' : ''}
             </span>
+            <span className="footer-text footer-version">v{APP_VERSION}</span>
           </div>
         </div>
 
